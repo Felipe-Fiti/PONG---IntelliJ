@@ -6,18 +6,20 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.Random;
 import java.awt.Color;
 import java.awt.Font;
+
 public class Cena implements GLEventListener{
     private float xMin, xMax, yMin, yMax, zMin, zMax;
     private TextRenderer textRenderer;
-
     //dados da esfera
-    public int placar;
-    public int vidas;
-    public int stacks;
-
+    public int placar = 0;
+    public int vidas = 5;
+    public int fase = 1;
+    public boolean Menu = true;
+    public boolean jogo = false;
+    public boolean pause = false;
+    public boolean fimJogo = false;
     public float ang;
     public int op;
-
     //Preenchimento
     public int mode;
 
@@ -42,7 +44,7 @@ public class Cena implements GLEventListener{
         //dados da esfera
         placar = 0;
         vidas = 5;
-        stacks = 15;
+        fase = 15;
 
         //preenchimento
         mode = GL2.GL_FILL;
@@ -70,21 +72,12 @@ public class Cena implements GLEventListener{
         desenhaTexto(gl, 10, 1040, Color.BLACK, "Placar: " + placar);
         desenhaTexto(gl, 10, 1020, Color.BLACK, "Vidas: " + vidas);
 
-        desenhaTexto(gl, 175, 500, Color.BLACK ,"Seja bem-vindo ao nosso jogo - PONG!");
-        desenhaTexto(gl, 270, 450, Color.BLACK ,"REGRAS:");
-        desenhaTexto(gl, 45, 430, Color.BLACK ,"Para jogar use somente as teclas da seta esquerda e direita do teclado!");
-        desenhaTexto(gl, 180, 410, Color.BLACK ,"Para PAUSAR o jogo aperte a tecla p!");
-        desenhaTexto(gl, 160, 390, Color.BLACK ,"Para começar o jogo aperte ENTER!");
+        desenhaTexto(gl, 730, 690, Color.BLACK ,"Seja bem-vindo ao nosso jogo - PONG!");
+        desenhaTexto(gl, 880, 650, Color.BLACK ,"REGRAS:");
+        desenhaTexto(gl, 600, 620, Color.BLACK ,"Para jogar use somente as teclas da seta esquerda e direita do teclado!");
+        desenhaTexto(gl, 760, 590, Color.BLACK ,"Para PAUSAR o jogo aperte a tecla p!");
+        desenhaTexto(gl, 775, 558, Color.BLACK ,"Para começar o jogo aperte ENTER!");
 
-        switch(op) {
-            case 1:
-                gl.glColor3f(0, 0, 0.8f); //cor do objeto
-                gl.glPushMatrix();
-                gl.glRotated(ang, 0, 1, 1);
-                glut.glutSolidSphere(placar, vidas, stacks);
-                gl.glPopMatrix();
-                break;
-            }
         gl.glFlush();
     }
 
