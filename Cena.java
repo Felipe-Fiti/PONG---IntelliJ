@@ -13,6 +13,7 @@ public class Cena implements GLEventListener{
     public int placar = 0;
     public int vidas = 5;
     public int fase = 1;
+    public boolean easterEgg = true;
     public boolean Menu = true;
     public boolean jogo = false;
     public boolean pause = false;
@@ -63,7 +64,7 @@ public class Cena implements GLEventListener{
             desenhaTexto(gl, 730, 690, Color.BLACK, "Seja bem-vindo ao nosso jogo - PONG!");
             desenhaTexto(gl, 880, 650, Color.BLACK, "REGRAS:");
             desenhaTexto(gl, 400, 620, Color.BLACK, "Para jogar use as teclas da seta esquerda (para andar a esquerda) e a seta direita (para andar a direita) do teclado!");
-            desenhaTexto(gl, 760, 590, Color.BLACK, "Para PAUSAR o jogo aperte a tecla p!");
+            desenhaTexto(gl, 760, 590, Color.BLACK, "Para PAUSAR o jogo aperte a tecla P!");
             desenhaTexto(gl, 730, 559, Color.BLACK, "Para começar o jogo aperte a tecla ENTER!");
             desenhaTexto(gl, 760, 530, Color.BLACK, "Para sair do jogo aperte a tecla ESC!");
 
@@ -75,7 +76,10 @@ public class Cena implements GLEventListener{
 
         }else if(pause){
             desenhaTexto(gl, 800, 700, Color.BLACK, "O jogo está Pausado!");
-            desenhaTexto(gl, 710, 650, Color.BLACK, "Aperte a letra p para continuar o jogo!");
+            desenhaTexto(gl, 710, 650, Color.BLACK, "Aperte a letra P para continuar o jogo!");
+        }else if(easterEgg){
+            desenhaTexto(gl, 750, 700, Color.BLACK, "Você encontrou um easter Egg!");
+            desenhaTexto(gl, 710, 670, Color.BLACK, "O que está fazendo aqui? Volte ao Jogo!");
         }
 
         gl.glFlush();
