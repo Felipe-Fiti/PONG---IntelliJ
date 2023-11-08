@@ -1,6 +1,8 @@
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 
+import java.awt.*;
+
 import static java.lang.System.exit;
 
 public class KeyBoard implements KeyListener{
@@ -21,12 +23,12 @@ public class KeyBoard implements KeyListener{
             case 80://TECLA P - Pause/Stop do jogo
                 cena.pause =! cena.pause;
                 cena.Menu = false;
-                cena.continuarJogo();
+                cena.jogo =! cena.pause;
                 break;
             case 13://Tecla ENTER - Start Jogo
                 cena.jogo =! cena.jogo;
                 cena.Menu = false;
-                cena.pause =! cena.jogo;
+                cena.easterEgg =!cena.easterEgg;
                 break;
         }
     }
