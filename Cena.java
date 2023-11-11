@@ -1,3 +1,4 @@
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
@@ -17,13 +18,21 @@ public class Cena implements GLEventListener{
     public float movimentoBarrinha;
     public float transXBola = 0;
     public float transYBola = 0;
+    public final float janela = 1000f;
+
+    public float direitaXBola = tamanho/2, esquerdaXBola = -tamanho/2;
+    public float superiorYBola = tamanho/2, inferiorYBola = -tamanho/2;
+    public final float velocidadeX = 20f, velocidadeY = 15f;
+    public float taxaX =20f , taxaY =15f;
+    public float direitaBarrinha = tamanho*3 , esquerdaBarrinha =direitaBarrinha -(tamanho*6);
+    public float Ybarrinha = -900 ;
+    public final float InicioTriangulo = 100;
+    public float triangulo =100;
     public boolean easterEgg = true;
     public boolean Menu = true;
     public boolean jogo = false;
     public boolean pause = false;
     public boolean fimJogo = false;
-    public float ang;
-    public int op;
     public int mode;
 
 
@@ -54,6 +63,33 @@ public class Cena implements GLEventListener{
         fase = 1;
     }
 
+    public void bordas(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(0,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(-100,100);
+        gl.glVertex2f(-100,-80);
+        gl.glVertex2f(-100,-80);
+        gl.glVertex2f(-80,-80);
+        gl.glVertex2f(-80,100);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+
+    public void borda(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(1,0,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(95,95);
+        gl.glVertex2f(95,-80);
+        gl.glVertex2f(-75,-80);
+        gl.glVertex2f(-75,-80);
+        gl.glVertex2f(-75,95);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
     public void barrinha(GL2 gl, GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(0,-900,0);
@@ -78,6 +114,74 @@ public class Cena implements GLEventListener{
         gl.glPopMatrix();
     }
 
+    public void resetarPosicaoInicialBolinha(){
+        transYBola = 0;
+        superiorYBola = tamanho / 2;
+        inferiorYBola = - tamanho / 2;
+        taxaY = - taxaY;
+
+        transXBola = 0;
+        direitaXBola = tamanho / 2;
+    }
+    public void movimentarBarra(){
+        //verifica a colisão da barra com a parede
+        System.out.println(taxaY);
+
+
+        if (movimentoBarrinha+ tamanho*3 >= janela){
+            movimentoBarrinha = janela - tamanho*3;
+            direitaBarrinha = janela;
+        }else if(movimentoBarrinha- tamanho*3 <= - janela){
+            movimentoBarrinha = - janela + tamanho*3;
+            direitaBarrinha = - janela + (tamanho*6);
+        }
+        //verifica colisao no eixo y
+        if (inferiorYBola <= Ybarrinha+(tamanho) && inferiorYBola >= Ybarrinha+(tamanho/2))// parte superior + margem de erro
+        {
+            //verificar colisão com a parte superior da barrra
+            if(direitaXBola >= esquerdaBarrinha && direitaXBola <= direitaBarrinha){
+                placar+=50;
+
+                fase = (placar/200)+1;
+
+                //taxa crescente, eixo y
+                taxaY = velocidadeY + (5 * (fase-1));
+
+                Random ran = new Random();
+                int aleatorizaAcressimoX = ran.nextInt(6);
+                // bolinha continua o curso do eixo x que estava realizando
+                if (taxaX<0){
+                    taxaX = -velocidadeX - (5 * (fase-1));//pode aumentar velocidade a depender da fase
+                    taxaX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                } else {
+                    taxaX = velocidadeX + (5 * (fase - 1));//pode aumentar velocidade a depender da fase
+                    taxaX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                }
+            }
+        }else if (inferiorYBola <= Ybarrinha+(tamanho) && inferiorYBola >= Ybarrinha-(tamanho)){
+            //verificar colisão com a parte lateral da barrra
+            if(direitaXBola >= esquerdaBarrinha && direitaXBola <= direitaBarrinha)
+            {
+                placar+=50;
+
+                fase = (placar/200)+1;
+
+                //taxa crescente, eixo y
+                taxaY = velocidadeY + (5 * (fase-1));
+
+                Random ran = new Random();
+                int aleatorizaAcressimoX = ran.nextInt(6);
+                //se bater na lateral a bolinha vai para o lado oposto em relação ao eixo x
+                if (taxaX < 0){
+                    taxaX = velocidadeX + (5 * (fase-1) );//pode aumentar velocidade a depender da fase
+                    taxaX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                } else {
+                    taxaX = -velocidadeX - (5 * (fase - 1));//pode aumentar velocidade a depender da fase
+                    taxaX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                }
+            }
+        }
+    }
 
     @Override
     public void display(GLAutoDrawable drawable){
@@ -98,11 +202,12 @@ public class Cena implements GLEventListener{
             desenhaTexto(gl, 760, 530, Color.BLACK, "Para sair do jogo aperte a tecla ESC!");
 
         }else if(jogo){
-            desenhaTexto(gl, 10, 1060, Color.BLACK, "Jogo: PONG");
-            desenhaTexto(gl, 10, 1035, Color.BLACK, "Fase: " + fase);
-            desenhaTexto(gl, 10, 1010, Color.BLACK, "Placar: " + placar);
-            desenhaTexto(gl, 10, 985, Color.BLACK, "Vidas: " + vidas);
-
+            bordas(gl,glut);
+            borda(gl,glut);
+            desenhaTexto(gl, 30, 1040, Color.BLACK, "Jogo: PONG");
+            desenhaTexto(gl, 30, 1015, Color.BLACK, "Fase: " + fase);
+            desenhaTexto(gl, 30, 990, Color.BLACK, "Placar: " + placar);
+            desenhaTexto(gl, 30, 965, Color.BLACK, "Vidas: " + vidas);
         }else if(pause){
             desenhaTexto(gl, 800, 700, Color.BLACK, "O jogo está Pausado!");
             desenhaTexto(gl, 710, 650, Color.BLACK, "Aperte a letra P para continuar o jogo!");
