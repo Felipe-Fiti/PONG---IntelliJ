@@ -13,6 +13,10 @@ public class Cena implements GLEventListener{
     public int placar = 0;
     public int vidas = 5;
     public int fase = 1;
+    public float tamanho = 50;
+    public float movimentoBarrinha;
+    public float transXBola = 0;
+    public float transYBola = 0;
     public boolean easterEgg = true;
     public boolean Menu = true;
     public boolean jogo = false;
@@ -49,6 +53,31 @@ public class Cena implements GLEventListener{
         vidas = 5;
         fase = 1;
     }
+
+    public void barrinha(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0,-900,0);
+        gl.glTranslatef(movimentoBarrinha,0,0);
+        float x = (float) -(tamanho*2.5);
+        for (int i = 0; i < 6 ; i++) {
+            gl.glPushMatrix();
+            gl.glTranslatef(x,0,0);
+            gl.glColor3f(0,0,1);
+            glut.glutSolidCube(tamanho);
+            gl.glPopMatrix();
+            x+=tamanho;
+        }
+        gl.glPopMatrix();
+    }
+    public void bola(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(transXBola, transYBola, 0);
+        gl.glTranslatef(-10, -10, 0);//mantem a bola no ponto quando começar
+        gl.glColor3f(1,1,1);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+
 
     @Override
     public void display(GLAutoDrawable drawable){
