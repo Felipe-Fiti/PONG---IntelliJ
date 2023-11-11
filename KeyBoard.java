@@ -30,6 +30,16 @@ public class KeyBoard implements KeyListener{
                 cena.Menu = false;
                 cena.easterEgg =!cena.easterEgg;
                 break;
+            case 149://seta esquerda
+                cena.movimentoBarrinha-= 50;
+                cena.direitaBarrinha -= 50;
+                cena.esquerdaBarrinha =cena.direitaBarrinha -(cena.tamanho*6);
+                break;
+            case 151://seta direita
+                cena.movimentoBarrinha+= 50;
+                cena.direitaBarrinha += 50;
+                cena.esquerdaBarrinha =cena.direitaBarrinha -(cena.tamanho*6);
+                break;
         }
     }
     @Override
