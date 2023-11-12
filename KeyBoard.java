@@ -26,9 +26,8 @@ public class KeyBoard implements KeyListener{
                 cena.jogo =! cena.pause;
                 break;
             case 13://Tecla ENTER - Start Jogo
-                cena.jogo =! cena.jogo;
+                cena.jogo = true;
                 cena.Menu = false;
-                cena.easterEgg =!cena.easterEgg;
                 break;
             case 149://seta esquerda
                 cena.movimentoBarrinha-= 50;
