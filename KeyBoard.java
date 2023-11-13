@@ -1,14 +1,11 @@
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
-
 import java.awt.*;
-
 import static java.lang.System.exit;
 
 public class KeyBoard implements KeyListener{
     private Cena cena;
     private Object exit;
-    //espaço - 32 ENTER - 13
     public KeyBoard(Cena cena){
         this.cena = cena;
     }
