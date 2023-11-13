@@ -7,14 +7,14 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.Random;
 import java.awt.Color;
 import java.awt.Font;
-
 public class Cena implements GLEventListener{
     private float xMin, xMax, yMin, yMax, zMin, zMax;
     private TextRenderer textRenderer;
-    public int placar = 0;
+    private TextRenderer textRenderer1;
+    public int placar = 0; //25 pontos
     public int vidas = 5;
     public int fase = 1;
-    public float tamanho = 50;
+    public float tamanho = 10;
     public float movimentoBarrinha;
     public float transXBola = 0;
     public float transYBola = 0;
@@ -45,7 +45,8 @@ public class Cena implements GLEventListener{
 
         reset();
 
-        textRenderer = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 20));
+        textRenderer = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 25));
+        textRenderer1 = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 35));
         //Profundidade
         gl.glEnable(GL2.GL_DEPTH_TEST);
     }
@@ -63,30 +64,16 @@ public class Cena implements GLEventListener{
         fase = 1;
     }
 
-    public void bordas(GL2 gl, GLUT glut){
-        gl.glPushMatrix();
-        gl.glColor3f(0,1,1);
-        gl.glLineWidth(100f);
-        gl.glBegin(GL.GL_LINE_LOOP);
-        gl.glVertex2f(-100,100);
-        gl.glVertex2f(-100,-80);
-        gl.glVertex2f(-100,-80);
-        gl.glVertex2f(-80,-80);
-        gl.glVertex2f(-80,100);
-        gl.glEnd();
-        gl.glPopMatrix();
-    }
-
     public void borda(GL2 gl, GLUT glut){
         gl.glPushMatrix();
-        gl.glColor3f(1,0,1);
+        gl.glColor3f(0,0,0);
         gl.glLineWidth(100f);
         gl.glBegin(GL.GL_LINE_LOOP);
-        gl.glVertex2f(95,95);
-        gl.glVertex2f(95,-80);
-        gl.glVertex2f(-75,-80);
-        gl.glVertex2f(-75,-80);
-        gl.glVertex2f(-75,95);
+        gl.glVertex2f(99,75);
+        gl.glVertex2f(99,-99);
+        gl.glVertex2f(-99,-99);
+        gl.glVertex2f(-99,-99);
+        gl.glVertex2f(-99,75);
         gl.glEnd();
         gl.glPopMatrix();
     }
@@ -108,9 +95,11 @@ public class Cena implements GLEventListener{
     public void bola(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
-        gl.glTranslatef(-10, -10, 0);//mantem a bola no ponto quando começar
-        gl.glColor3f(1,1,1);
+        gl.glTranslatef(-65, 90, 0);//mantem a bola no ponto quando começar
+        gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
+        gl.glColor3f(0,0,0);
+        glut.glutWireSphere(tamanho,500,2);
         gl.glPopMatrix();
     }
 
@@ -194,28 +183,22 @@ public class Cena implements GLEventListener{
         gl.glLoadIdentity();
 
         if(Menu){
-            desenhaTexto(gl, 730, 690, Color.BLACK, "Seja bem-vindo ao nosso jogo - PONG!");
+            desenhaTexto(gl, 700, 690, Color.BLACK, "Seja bem-vindo ao nosso jogo - PONG!");
             desenhaTexto(gl, 880, 650, Color.BLACK, "REGRAS:");
-            desenhaTexto(gl, 400, 620, Color.BLACK, "Para jogar use as teclas da seta esquerda (para andar a esquerda) e a seta direita (para andar a direita) do teclado!");
-            desenhaTexto(gl, 760, 590, Color.BLACK, "Para PAUSAR o jogo aperte a tecla P!");
-            desenhaTexto(gl, 730, 559, Color.BLACK, "Para começar o jogo aperte a tecla ENTER!");
-            desenhaTexto(gl, 760, 530, Color.BLACK, "Para sair do jogo aperte a tecla ESC!");
+            desenhaTexto(gl, 230, 620, Color.BLACK, "Para jogar use as teclas da seta esquerda (para andar a esquerda) e a seta direita (para andar a direita) do teclado!");
+            desenhaTexto(gl, 720, 590, Color.BLACK, "Para PAUSAR o jogo aperte a tecla P!");
+            desenhaTexto(gl, 680, 559, Color.BLACK, "Para começar o jogo aperte a tecla ENTER!");
+            desenhaTexto(gl, 720, 530, Color.BLACK, "Para sair do jogo aperte a tecla ESC!");
 
         }else if(jogo){
-            bordas(gl,glut);
+            bola(gl,glut);
             borda(gl,glut);
-            desenhaTexto(gl, 30, 1040, Color.BLACK, "Jogo: PONG");
-            desenhaTexto(gl, 30, 1015, Color.BLACK, "Fase: " + fase);
-            desenhaTexto(gl, 30, 990, Color.BLACK, "Placar: " + placar);
-            desenhaTexto(gl, 30, 965, Color.BLACK, "Vidas: " + vidas);
+            desenhaTexto1(gl, 30, 1000, Color.BLACK, "LEVEL " + fase);
+            desenhaTexto1(gl, 1600, 1000, Color.BLACK, "SCORE " + placar);
         }else if(pause){
             desenhaTexto(gl, 800, 700, Color.BLACK, "O jogo está Pausado!");
             desenhaTexto(gl, 710, 650, Color.BLACK, "Aperte a letra P para continuar o jogo!");
-        }else if(easterEgg){
-            desenhaTexto(gl, 750, 700, Color.BLACK, "Você encontrou um easter Egg!");
-            desenhaTexto(gl, 710, 670, Color.BLACK, "O que está fazendo aqui? Volte ao Jogo!");
         }
-
         gl.glFlush();
     }
 
@@ -226,6 +209,16 @@ public class Cena implements GLEventListener{
         textRenderer.setColor(cor);
         textRenderer.draw(frase, xPosicao, yPosicao);
         textRenderer.endRendering();
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, mode);
+    }
+
+    public void desenhaTexto1(GL2 gl, int xPosicao, int yPosicao, Color cor, String frase){
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+        //Retorna a largura e altura da janela
+        textRenderer1.beginRendering(Renderer.screenWidth, Renderer.screenHeight);
+        textRenderer1.setColor(cor);
+        textRenderer1.draw(frase, xPosicao, yPosicao);
+        textRenderer1.endRendering();
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, mode);
     }
 
