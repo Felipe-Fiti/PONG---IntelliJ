@@ -15,6 +15,7 @@ public class Cena implements GLEventListener{
     public int vidas = 5;
     public int fase = 1;
     public float tamanho = 85;
+    public float tamanhoB = 100;
     public float movimentoBarrinha;
     public float transXBola = 0;
     public float transYBola = 0;
@@ -51,7 +52,6 @@ public class Cena implements GLEventListener{
 
         textRenderer = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 25));
         textRenderer1 = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 35));
-        //Profundidade
         gl.glEnable(GL2.GL_DEPTH_TEST);
     }
 
@@ -80,25 +80,39 @@ public class Cena implements GLEventListener{
         gl.glEnd();
         gl.glPopMatrix();
     }
+
+    public void faixa(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(1,0,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(1000,820);
+        gl.glVertex2f(1000,-1020);
+        gl.glVertex2f(-1000,-1020);
+        gl.glVertex2f(-1000,820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+
     public void barrinha(GL2 gl, GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(0,-900,0);
         gl.glTranslatef(movimentoBarrinha,0,0);
-        float x = (float) -(tamanho*2.5);
+        float x = (float) -(tamanhoB*2);
         for (int i = 0; i < 6 ; i++) {
             gl.glPushMatrix();
             gl.glTranslatef(x,0,0);
-            gl.glColor3f(0,0,1);
-            glut.glutSolidCube(tamanho);
+            gl.glColor3f(0,1,1);
+            glut.glutSolidCube(tamanhoB);
             gl.glPopMatrix();
-            x+=tamanho;
+            x+=tamanhoB;
         }
         gl.glPopMatrix();
     }
     public void bola(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
-        gl.glTranslatef(-90, 90, 0);//mantem a bola no ponto quando começar
+        gl.glTranslatef(20, 10, 0);//mantem a bola no ponto quando começar
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
@@ -107,7 +121,7 @@ public class Cena implements GLEventListener{
     public void bola1(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
-        gl.glTranslatef(-1250, 950, 0);//mantem a bola no ponto quando começar
+        gl.glTranslatef(-1250, 965, 0);//mantem a bola no ponto quando começar
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
@@ -116,7 +130,7 @@ public class Cena implements GLEventListener{
     public void bola2(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
-        gl.glTranslatef(-1050, 950, 0);//mantem a bola no ponto quando começar
+        gl.glTranslatef(-1050, 965, 0);//mantem a bola no ponto quando começar
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
@@ -125,7 +139,7 @@ public class Cena implements GLEventListener{
     public void bola3(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
-        gl.glTranslatef(-850, 950, 0);//mantem a bola no ponto quando começar
+        gl.glTranslatef(-850, 965, 0);//mantem a bola no ponto quando começar
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
@@ -134,7 +148,7 @@ public class Cena implements GLEventListener{
     public void bola4(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
-        gl.glTranslatef(-650, 950, 0);//mantem a bola no ponto quando começar
+        gl.glTranslatef(-650, 965, 0);//mantem a bola no ponto quando começar
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
@@ -143,7 +157,7 @@ public class Cena implements GLEventListener{
     public void bola5(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
-        gl.glTranslatef(-450, 950, 0);//mantem a bola no ponto quando começar
+        gl.glTranslatef(-450, 965, 0);//mantem a bola no ponto quando começar
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
@@ -244,6 +258,9 @@ public class Cena implements GLEventListener{
             bola4(gl,glut);
             bola5(gl,glut);
             borda(gl,glut);
+            faixa(gl, glut);
+            barrinha(gl, glut);
+            movimentarBarra();
             desenhaTexto1(gl, 30, 1000, Color.BLACK, "LEVEL " + fase);
             desenhaTexto1(gl, 1600, 1000, Color.BLACK, "SCORE " + placar);
         }else if(pause){
