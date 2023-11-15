@@ -94,6 +94,20 @@ public class Cena implements GLEventListener{
         gl.glPopMatrix();
     }
 
+
+    public void campo(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(0,1,0);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL2.GL_QUAD_STRIP);
+        gl.glVertex2f(1000,820);
+        gl.glVertex2f(1000,-1020);
+        gl.glVertex2f(-1000,-1020);
+        gl.glVertex2f(-1000,820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+
     public void barrinha(GL2 gl, GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(0,-900,0);
@@ -259,6 +273,7 @@ public class Cena implements GLEventListener{
             bola5(gl,glut);
             borda(gl,glut);
             faixa(gl, glut);
+            campo(gl,glut);
             barrinha(gl, glut);
             movimentarBarra();
             desenhaTexto1(gl, 30, 1000, Color.BLACK, "LEVEL " + fase);
