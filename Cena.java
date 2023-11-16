@@ -80,34 +80,52 @@ public class Cena implements GLEventListener{
         gl.glEnd();
         gl.glPopMatrix();
     }
-
-    public void faixa(GL2 gl, GLUT glut){
+    public void faixaCentro(GL2 gl, GLUT glut){
         gl.glPushMatrix();
-        gl.glColor3f(1,0,1);
+        gl.glColor3f(1,1,1);
         gl.glLineWidth(100f);
         gl.glBegin(GL.GL_LINE_LOOP);
-        gl.glVertex2f(1000,820);
-        gl.glVertex2f(1000,-1020);
-        gl.glVertex2f(-1000,-1020);
-        gl.glVertex2f(-1000,820);
+        gl.glVertex2f(10,900);
+        gl.glVertex2f(10,-950);
         gl.glEnd();
         gl.glPopMatrix();
     }
-
-
+    public void faixaDireita(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(1,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(1200,500);
+        gl.glVertex2f(1200,-750);
+        gl.glVertex2f(1800,-750);
+        gl.glVertex2f(1800,500);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void faixaEsquerda(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(1,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(-1200,500);
+        gl.glVertex2f(-1200,-750);
+        gl.glVertex2f(-1800,-750);
+        gl.glVertex2f(-1800,500);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
     public void campo(GL2 gl, GLUT glut){
         gl.glPushMatrix();
         gl.glColor3f(0,1,0);
         gl.glLineWidth(100f);
         gl.glBegin(GL2.GL_QUAD_STRIP);
-        gl.glVertex2f(1000,820);
-        gl.glVertex2f(1000,-1020);
-        gl.glVertex2f(-1000,-1020);
-        gl.glVertex2f(-1000,820);
+        gl.glVertex2f(1900,820);
+        gl.glVertex2f(1900,-1000);
+        gl.glVertex2f(-1900,-1000);
+        gl.glVertex2f(-1900,820);
         gl.glEnd();
         gl.glPopMatrix();
     }
-
     public void barrinha(GL2 gl, GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(0,-900,0);
@@ -131,7 +149,6 @@ public class Cena implements GLEventListener{
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-
     public void bola1(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
@@ -140,7 +157,6 @@ public class Cena implements GLEventListener{
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-
     public void bola2(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
@@ -149,7 +165,6 @@ public class Cena implements GLEventListener{
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-
     public void bola3(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
@@ -158,7 +173,6 @@ public class Cena implements GLEventListener{
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-
     public void bola4(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
@@ -167,7 +181,6 @@ public class Cena implements GLEventListener{
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-
     public void bola5(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
@@ -176,7 +189,6 @@ public class Cena implements GLEventListener{
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-
     public void resetarPosicaoInicialBolinha(){
         transYBola = 0;
         superiorYBola = tamanho / 2;
@@ -272,7 +284,9 @@ public class Cena implements GLEventListener{
             bola4(gl,glut);
             bola5(gl,glut);
             borda(gl,glut);
-            faixa(gl, glut);
+            faixaCentro(gl, glut);
+            faixaDireita(gl,glut);
+            faixaEsquerda(gl,glut);
             campo(gl,glut);
             barrinha(gl, glut);
             movimentarBarra();
