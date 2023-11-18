@@ -79,6 +79,26 @@ public class Cena implements GLEventListener{
         gl.glEnd();
         gl.glPopMatrix();
     }
+    public void bordaInicio(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(1,0,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(1550,500);
+        gl.glVertex2f(1550,-150);
+        gl.glVertex2f(-1550,-150);
+        gl.glVertex2f(-1550,500);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void sol(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(transXBola, transYBola, 0);
+        gl.glTranslatef(950, 1050, 0);
+        gl.glColor3f(1,1,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
     public void faixaCentro(GL2 gl, GLUT glut){
         gl.glPushMatrix();
         gl.glColor3f(1,1,1);
@@ -280,6 +300,8 @@ public class Cena implements GLEventListener{
         gl.glLoadIdentity();
 
         if(Menu){
+            bordaInicio(gl,glut);
+            sol(gl,glut);
             desenhaTexto(gl, 700, 690, Color.BLACK, "Seja bem-vindo ao nosso jogo - PONG!");
             desenhaTexto(gl, 880, 650, Color.BLACK, "REGRAS:");
             desenhaTexto(gl, 230, 620, Color.BLACK, "Para jogar use as teclas da seta esquerda (para andar a esquerda) e a seta direita (para andar a direita) do teclado!");
