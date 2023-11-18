@@ -29,7 +29,6 @@ public class Cena implements GLEventListener{
     public float Ybarrinha = -900 ;
     public final float InicioTriangulo = 100;
     public float triangulo =100;
-    public boolean easterEgg = true;
     public boolean Menu = true;
     public boolean jogo = false;
     public boolean pause = false;
@@ -86,7 +85,7 @@ public class Cena implements GLEventListener{
         gl.glLineWidth(100f);
         gl.glBegin(GL.GL_LINE_LOOP);
         gl.glVertex2f(10,900);
-        gl.glVertex2f(10,-950);
+        gl.glVertex2f(10,-1000);
         gl.glEnd();
         gl.glPopMatrix();
     }
@@ -119,6 +118,18 @@ public class Cena implements GLEventListener{
         gl.glColor3f(0,1,0);
         gl.glLineWidth(100f);
         gl.glBegin(GL2.GL_QUAD_STRIP);
+        gl.glVertex2f(1900,820);
+        gl.glVertex2f(1900,-1000);
+        gl.glVertex2f(-1900,-1000);
+        gl.glVertex2f(-1900,820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void tri(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(0, 1, 0);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL2.GL_TRIANGLES);
         gl.glVertex2f(1900,820);
         gl.glVertex2f(1900,-1000);
         gl.glVertex2f(-1900,-1000);
@@ -288,6 +299,7 @@ public class Cena implements GLEventListener{
             faixaDireita(gl,glut);
             faixaEsquerda(gl,glut);
             campo(gl,glut);
+            tri(gl,glut);
             barrinha(gl, glut);
             movimentarBarra();
             desenhaTexto1(gl, 30, 1000, Color.BLACK, "LEVEL " + fase);
