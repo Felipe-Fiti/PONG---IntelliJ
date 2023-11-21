@@ -15,17 +15,18 @@ public class Cena implements GLEventListener{
     public int vidas = 5;
     public int fase = 1;
     public float tamanho = 85;
-    public float tamanhoB = 80;
+    public float tamanhoB = 100;
     public float movimentoBarrinha = 0;
     public float transXBola = 0;
     public float transYBola = 0;
     private float margemXdErro;
     private float margemYdErro;
     public final float janela = 1890f;
+    public final float janela2 = 830f;
     public float direitaXBola = tamanho/2, esquerdaXBola = -tamanho/2;
     public float superiorYBola = tamanho/2, inferiorYBola = -tamanho/2;
-    public final float velocidadeX = 30f, velocidadeY = 60f;
-    public float taxaAttX = 40f , taxaAttY = 30f;
+    public final float velocidadeX = 60f, velocidadeY = 45f;
+    public float taxaAttX = 60f , taxaAttY = 45f;
     public float direitaBarrinha = tamanho*3 , esquerdaBarrinha =direitaBarrinha -(tamanho*6);
     public float Ybarrinha = -900 ;
     public final float InicioTriangulo = 100;
@@ -68,7 +69,7 @@ public class Cena implements GLEventListener{
         fase = 1;
     }
 
-    public void borda(GL2 gl, GLUT glut){//Borda jogo
+    public void borda(GL2 gl, GLUT glut){
         gl.glPushMatrix();
         gl.glColor3f(0,0,0);
         gl.glLineWidth(100f);
@@ -80,7 +81,7 @@ public class Cena implements GLEventListener{
         gl.glEnd();
         gl.glPopMatrix();
     }
-    public void bordaInicio(GL2 gl, GLUT glut){ //Borda tela inicial
+    public void bordaInicio(GL2 gl, GLUT glut){
         gl.glPushMatrix();
         gl.glColor3f(1,0,1);
         gl.glLineWidth(100f);
@@ -283,9 +284,9 @@ public class Cena implements GLEventListener{
                 taxaAttX = - taxaAttX;
             }
             //verifica colisões teto/chão
-            if(superiorYBola >= janela){
+            if(superiorYBola >= 825f){
                 taxaAttY = - taxaAttY;
-            }else if(inferiorYBola <= - janela ){
+            }else if(inferiorYBola <= -1300f ){
                 vidas-=1;
                 //resetando valores iniciaais
                 resetarPosicaoInicialBolinha();
@@ -295,7 +296,7 @@ public class Cena implements GLEventListener{
     public void movimentacaoDaBarrinha(){
         //verifica colisao no eixo y
         if(direitaXBola >= esquerdaBarrinha && esquerdaXBola <= direitaBarrinha){
-            if (inferiorYBola == -700f)
+            if (inferiorYBola == -800f)
             {
                 placar+=50;
                 fase = (placar/200)+1;
