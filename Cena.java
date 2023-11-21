@@ -16,25 +16,26 @@ public class Cena implements GLEventListener{
     public int fase = 1;
     public float tamanho = 85;
     public float tamanhoB = 100;
-    public float movimentoBarrinha;
+    public float movimentoBarrinha = 0;
     public float transXBola = 0;
     public float transYBola = 0;
-    public final float janela = 1000f;
-
+    private float margemXdErro;
+    private float margemYdErro;
+    public final float janela = 1890f;
     public float direitaXBola = tamanho/2, esquerdaXBola = -tamanho/2;
     public float superiorYBola = tamanho/2, inferiorYBola = -tamanho/2;
-    public final float velocidadeX = 20f, velocidadeY = 15f;
-    public float taxaX =20f , taxaY =15f;
+    public final float velocidadeX = 30f, velocidadeY = 1f;
+    public float taxaAttX =20f , taxaAttY =1f;
     public float direitaBarrinha = tamanho*3 , esquerdaBarrinha =direitaBarrinha -(tamanho*6);
     public float Ybarrinha = -900 ;
     public final float InicioTriangulo = 100;
     public float triangulo =100;
+    public boolean dandoPlay = false;
     public boolean Menu = true;
-    public boolean jogo = false;
     public boolean pause = false;
     public boolean fimJogo = false;
     public int mode;
-
+    public final float velDoMovimentarDaBarra = 100;
 
     @Override
     public void init(GLAutoDrawable drawable){
@@ -172,49 +173,50 @@ public class Cena implements GLEventListener{
         }
         gl.glPopMatrix();
     }
-    public void bola(GL2 gl,GLUT glut){
+    public void bola0(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
-        gl.glTranslatef(20, 10, 0);//mantem a bola no ponto quando começar
+        gl.glTranslatef(margemXdErro,margemYdErro,0);
+        // Aplica os valores convertidos:
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-    public void bola1(GL2 gl,GLUT glut){
+    public void vida1(GL2 gl,GLUT glut){
         gl.glPushMatrix();
-        gl.glTranslatef(transXBola, transYBola, 0);
+        gl.glTranslatef(0, 0, 0);
         gl.glTranslatef(-1250, 965, 0);//mantem a bola no ponto quando começar
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-    public void bola2(GL2 gl,GLUT glut){
+    public void vida2(GL2 gl,GLUT glut){
         gl.glPushMatrix();
-        gl.glTranslatef(transXBola, transYBola, 0);
+        gl.glTranslatef(0, 0, 0);
         gl.glTranslatef(-1050, 965, 0);//mantem a bola no ponto quando começar
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-    public void bola3(GL2 gl,GLUT glut){
+    public void vida3(GL2 gl,GLUT glut){
         gl.glPushMatrix();
-        gl.glTranslatef(transXBola, transYBola, 0);
+        gl.glTranslatef(0, 0, 0);
         gl.glTranslatef(-850, 965, 0);//mantem a bola no ponto quando começar
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-    public void bola4(GL2 gl,GLUT glut){
+    public void vida4(GL2 gl,GLUT glut){
         gl.glPushMatrix();
-        gl.glTranslatef(transXBola, transYBola, 0);
+        gl.glTranslatef(0, 0, 0);
         gl.glTranslatef(-650, 965, 0);//mantem a bola no ponto quando começar
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-    public void bola5(GL2 gl,GLUT glut){
+    public void vida5(GL2 gl,GLUT glut){
         gl.glPushMatrix();
-        gl.glTranslatef(transXBola, transYBola, 0);
+        gl.glTranslatef(0, 0, 0);
         gl.glTranslatef(-450, 965, 0);//mantem a bola no ponto quando começar
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
@@ -224,66 +226,112 @@ public class Cena implements GLEventListener{
         transYBola = 0;
         superiorYBola = tamanho / 2;
         inferiorYBola = - tamanho / 2;
-        taxaY = - taxaY;
+        taxaAttY = - taxaAttY;
 
         transXBola = 0;
         direitaXBola = tamanho / 2;
     }
-    public void movimentarBarra(){
-        //verifica a colisão da barra com a parede
-        System.out.println(taxaY);
+    public void movimentarBola0(){
+        if (dandoPlay && vidas!=0){
+            transYBola+= taxaAttY;//inicia a movimentacao da bolinha no eixo y
+            superiorYBola =transYBola + tamanho + margemYdErro;//armazena a extremidade Y com base na translacao e tamanho do objeto( /2 porque a bolinha é iniciada no centro da janela )
+            inferiorYBola =transYBola - tamanho + margemYdErro;
 
+            transXBola+= taxaAttX;//inicia a movimentacao da bolinha no eixo X
+            direitaXBola =transXBola + tamanho + margemXdErro;//armazena a extremidade X
+            esquerdaXBola= transXBola - tamanho + margemXdErro;
 
-        if (movimentoBarrinha+ tamanho*3 >= janela){
-            movimentoBarrinha = janela - tamanho*3;
-            direitaBarrinha = janela;
-        }else if(movimentoBarrinha- tamanho*3 <= - janela){
-            movimentoBarrinha = - janela + tamanho*3;
-            direitaBarrinha = - janela + (tamanho*6);
+            if(taxaAttX>= 0){
+                float pixeisAteParede = janela - direitaXBola;
+                float restoMargemDeErro = pixeisAteParede % taxaAttX;
+                if(restoMargemDeErro != 0){
+                    margemXdErro += restoMargemDeErro;
+                    direitaXBola += restoMargemDeErro;
+                    esquerdaXBola = direitaXBola - 100;
+                }
+            }else{
+                float pixeisAteParede = - janela + esquerdaXBola;
+                float restoMargemDeErro = pixeisAteParede % taxaAttX;
+                if(restoMargemDeErro != 0){
+                    margemXdErro -= restoMargemDeErro;
+                    direitaXBola -= restoMargemDeErro;
+                    esquerdaXBola = direitaXBola - 100;
+                }
+            }
+            if(taxaAttY>=0){
+                float pixeisAteParede = janela - superiorYBola;
+                float restoMargemDeErro = pixeisAteParede % taxaAttY;
+                if(restoMargemDeErro != 0){
+                    margemYdErro += restoMargemDeErro;
+                    superiorYBola += restoMargemDeErro;
+                    inferiorYBola = superiorYBola - 100;
+                }
+            } else {
+                float pixeisAteBarra = (- 800) - inferiorYBola;
+
+                float restoMargemDeErro = pixeisAteBarra % taxaAttY;
+                if(restoMargemDeErro != 0){
+                    margemYdErro += restoMargemDeErro;
+                    inferiorYBola += restoMargemDeErro;
+                    superiorYBola = inferiorYBola + 100;
+                }
+            }
+            //verificar colisoes paredes
+            if(direitaXBola >= janela ){
+                taxaAttX = - taxaAttX;
+            } else if(esquerdaXBola <= (-janela)){
+                taxaAttX = - taxaAttX;
+            }
+            //verifica colisões teto/chão
+            if(superiorYBola >= janela){
+                taxaAttY = - taxaAttY;
+            }else if(inferiorYBola <= - janela ){
+                vidas-=1;
+                //resetando valores iniciaais
+                resetarPosicaoInicialBolinha();
+            }
         }
+    }
+    public void movimentacaoDaBarrinha(){
         //verifica colisao no eixo y
-        if (inferiorYBola <= Ybarrinha+(tamanho) && inferiorYBola >= Ybarrinha+(tamanho/2))// parte superior + margem de erro
-        {
-            //verificar colisão com a parte superior da barrra
-            if(direitaXBola >= esquerdaBarrinha && direitaXBola <= direitaBarrinha){
+        if(direitaXBola >= esquerdaBarrinha && esquerdaXBola <= direitaBarrinha){
+            if (inferiorYBola == -800f)
+            {
                 placar+=50;
-
                 fase = (placar/200)+1;
 
                 //taxa crescente, eixo y
-                taxaY = velocidadeY + (5 * (fase-1));
+                taxaAttY = velocidadeY + (5 * (fase-1));
 
                 Random ran = new Random();
                 int aleatorizaAcressimoX = ran.nextInt(6);
                 // bolinha continua o curso do eixo x que estava realizando
-                if (taxaX<0){
-                    taxaX = -velocidadeX - (5 * (fase-1));//pode aumentar velocidade a depender da fase
-                    taxaX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                if (taxaAttX<0){
+                    taxaAttX = -velocidadeX - (5 * (fase-1));//pode aumentar velocidade a depender da fase
+                    taxaAttX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
                 } else {
-                    taxaX = velocidadeX + (5 * (fase - 1));//pode aumentar velocidade a depender da fase
-                    taxaX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                    taxaAttX = velocidadeX + (5 * (fase - 1));//pode aumentar velocidade a depender da fase
+                    taxaAttX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
                 }
-            }
-        }else if (inferiorYBola <= Ybarrinha+(tamanho) && inferiorYBola >= Ybarrinha-(tamanho)){
-            //verificar colisão com a parte lateral da barrra
-            if(direitaXBola >= esquerdaBarrinha && direitaXBola <= direitaBarrinha)
+            }else
+            if (inferiorYBola <= -800f && superiorYBola >= -850f)// parte superior + margem de erro
             {
                 placar+=50;
 
                 fase = (placar/200)+1;
 
                 //taxa crescente, eixo y
-                taxaY = velocidadeY + (5 * (fase-1));
+                taxaAttY = velocidadeY + (5 * (fase-1));
 
                 Random ran = new Random();
                 int aleatorizaAcressimoX = ran.nextInt(6);
                 //se bater na lateral a bolinha vai para o lado oposto em relação ao eixo x
-                if (taxaX < 0){
-                    taxaX = velocidadeX + (5 * (fase-1) );//pode aumentar velocidade a depender da fase
-                    taxaX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                if (taxaAttX < 0){
+                    taxaAttX = velocidadeX + (5 * (fase-1) );//pode aumentar velocidade a depender da fase
+                    taxaAttX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
                 } else {
-                    taxaX = -velocidadeX - (5 * (fase - 1));//pode aumentar velocidade a depender da fase
-                    taxaX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                    taxaAttX = -velocidadeX - (5 * (fase - 1));//pode aumentar velocidade a depender da fase
+                    taxaAttX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
                 }
             }
         }
@@ -309,13 +357,13 @@ public class Cena implements GLEventListener{
             desenhaTexto(gl, 680, 559, Color.BLACK, "Para começar o jogo aperte a tecla ENTER!");
             desenhaTexto(gl, 720, 530, Color.BLACK, "Para sair do jogo aperte a tecla ESC!");
 
-        }else if(jogo){
-            bola(gl,glut);
-            bola1(gl,glut);
-            bola2(gl,glut);
-            bola3(gl,glut);
-            bola4(gl,glut);
-            bola5(gl,glut);
+        }else if(dandoPlay && vidas != 0){
+            bola0(gl,glut);
+            vida1(gl,glut);
+            vida2(gl,glut);
+            vida3(gl,glut);
+            vida4(gl,glut);
+            vida5(gl,glut);
             borda(gl,glut);
             faixaCentro(gl, glut);
             faixaDireita(gl,glut);
@@ -323,9 +371,23 @@ public class Cena implements GLEventListener{
             campo(gl,glut);
             tri(gl,glut);
             barrinha(gl, glut);
-            movimentarBarra();
+            movimentacaoDaBarrinha();
             desenhaTexto1(gl, 30, 1000, Color.BLACK, "LEVEL " + fase);
             desenhaTexto1(gl, 1600, 1000, Color.BLACK, "SCORE " + placar);
+
+            if (vidas!= 0) {
+                bola0(gl, glut);
+                movimentarBola0();
+
+                barrinha(gl, glut);
+                movimentacaoDaBarrinha();
+
+                if (fase >= 2) {
+                    //obstaculo(gl, glut);
+                    //colisaoObstaculo();
+                }
+            }
+
         }else if(pause){
             desenhaTexto(gl, 800, 700, Color.BLACK, "O jogo está Pausado!");
             desenhaTexto(gl, 710, 650, Color.BLACK, "Aperte a letra P para continuar o jogo!");
