@@ -5,8 +5,11 @@ CRIAR UM JOGO DE PONG
 PROF. FERNANDO KAKUGAWA
 
 Integrantes do grupo: Felipe Bianco Fitipaldi - 125111347112
+
 João Otávio de Souza - 125111350031
+
 João Vitor Marques de Almeida -  125111360331
+
 Luigi Marchetti Benedito - 125111356622
 
 Instruções para Entrega do Trabalho: 
