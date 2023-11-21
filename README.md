@@ -3,6 +3,12 @@ A3 de Computação Gráfica e RA
 COMPUTAÇÃO GRÁFICA E REALIDADE VIRTUAL
 CRIAR UM JOGO DE PONG 
 PROF. FERNANDO KAKUGAWA
+
+Integrantes do grupo: Felipe Bianco Fitipaldi - 125111347112
+João Otávio de Souza - 125111350031
+João Vitor Marques de Almeida -  125111360331
+Luigi Marchetti Benedito - 125111356622
+
 Instruções para Entrega do Trabalho: 
 - Este trabalho deverá ser desenvolvido em grupos de, no máximo, 5 alunos; 
 - Forma de entrega: arquivo compactado (ZIP), contendo: 
