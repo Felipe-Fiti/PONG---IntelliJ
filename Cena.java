@@ -1,406 +1,470 @@
-package cena;
-
-
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.awt.TextRenderer;
-
+import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.Random;
 import java.awt.Color;
 import java.awt.Font;
-
 public class Cena implements GLEventListener{
     private float xMin, xMax, yMin, yMax, zMin, zMax;
-    public final float extremidadeJanela = 1000f;
-    public float size = 50;
     private TextRenderer textRenderer;
-    public float extremidadeDireitaXBolinha = size, extremidadeEsquerdaXBolinha = -size;
-    public float extremidadeSuperiorYBolinha = size, extremidadeInferiorYBolinha = -size;
-    public float translacaoXBolinha=0, translacaoYBolinha=0;
-    public final float velocidadeInicialX = 20f, velocidadeInicialY = 15f;
-    public float taxaAtualizacaoX =20f , taxaAtualizacaoY =15f;
-    public float movimentacaoBarra=0;
-    public float extremidadeDireitaBarra = size*3 , extremidadeEsquerdaBarra =extremidadeDireitaBarra -(size*6);
-    public float posicaoYbarra = -900 ;
+    private TextRenderer textRenderer1;
+    public int placar = 0; //25 pontos
     public int vidas = 5;
-    public int pontuacao = 0;
-    public int fase= 1;
-
-    public final float tamanhoInicialObstaculo = 100;
-    public float tamanhoObstaculo = tamanhoInicialObstaculo + (20 * (fase-1));
-
-    public int corSelecionada = 0;
-    // Variáveis para a Bolinha
-    public float vermelhoBolinha = 1;
-    public float verdeBolinha = 1;
-    public float azulBolinha = 1;
-
-    // Variáveis para a Barra
-    public float vermelhoBarra = 1;
-    public float verdeBarra = 1;
-    public float azulBarra = 1;
-
-    // Variáveis para o Fundo
-    public float vermelhoFundo = 1;
-    public float verdeFundo = 1;
-    public float azulFundo = 1;
-
-    // Variáveis para a Borda
-    public float vermelhoBorda = 1;
-    public float verdeBorda = 1;
-    public float azulBorda = 1;
-
-
-    public boolean menuPrincipalAtivado = true;
-    public boolean jogoIniciado = false;
-    public boolean menuPausaAtivado = false;
-    public boolean menuGameOver = false;
-
-    //Adicionando Variáveis para textura
-
-    public static final String texturaCoracao = "C:\\Users\\paulo\\Documents\\Projeto-A3\\Pong\\Pong\\src\\texturas\\coracao_256.jpg";
-
-    // Adicionando Variávies para o filtro da textura
-    public int filtro = GL2.GL_LINEAR; ////GL_NEAREST ou GL_LINEAR
-    public int wrap = GL2.GL_REPEAT;  //GL.GL_REPEAT ou GL.GL_CLAMP
-    public int modo = GL2.GL_DECAL; ////GL.GL_MODULATE ou GL.GL_DECAL ou GL.GL_BLEND
-
+    public int fase = 1;
+    public float tamanho = 85;
+    public float tamanhoB = 100;
+    public final float tamanhoPrimarioDoObstaculo = 100;
+    public float tamanhoNormalDoObstaculo = tamanhoPrimarioDoObstaculo + (20 * (fase-1));
+    public float movimentoBarrinha = 0;
+    public float transXBola = 0;
+    public float transYBola = 0;
+    private float margemXdErro;
+    private float margemYdErro;
+    public final float janela = 1890f;
+    public float direitaXBola = tamanho, esquerdaXBola = -tamanho;
+    public float superiorYBola = tamanho, inferiorYBola = -tamanho;
+    public final float velocidadeX = 60f, velocidadeY = 45f;
+    public float taxaAttX = 60f , taxaAttY = 45f;
+    public float direitaBarrinha = tamanho*3 , esquerdaBarrinha =direitaBarrinha -(tamanho*6);
+    public float Ybarrinha = -900 ;
+    //public final float InicioTriangulo = 100;
+    //public float triangulo =100;
+    public boolean dandoPlay = false;
+    public boolean Menu = true;
+    public boolean pause = false;
+    public boolean fimDoJogo = false;
     public int mode;
-    private float margemDeErroX;
-    private float margemDeErroY;
-    public final float velocidadeMovimentoDaBarra = 50;
+    public final float velDoMovimentarDaBarra = 100;
 
-    public void resetarPosicaoInicialBolinha(){
+    public void reset(){
+        placar = 0;
+        vidas = 5;
+        fase = 1;
+        mode = GL2.GL_FILL;
+    }
+    public void continuarJogo(){
+        placar = 0;
+        vidas = 5;
+        fase = 1;
+    }
+    public void restartPosicaoDaBolinha(){
         if (fase>=2){
-            translacaoYBolinha = tamanhoObstaculo+ size;
-            extremidadeSuperiorYBolinha = translacaoYBolinha + size;
-            extremidadeInferiorYBolinha = translacaoYBolinha - size;
-            taxaAtualizacaoY = - taxaAtualizacaoY;
+            transYBola = tamanhoNormalDoObstaculo+ tamanho;
+            superiorYBola = transYBola + tamanho;
+            inferiorYBola = transYBola - tamanho;
+            taxaAttY = - taxaAttY;
 
-            translacaoXBolinha = 0;
-            extremidadeDireitaXBolinha = size;
+            transXBola = 0;
+            direitaXBola = tamanho;
 
-            margemDeErroX=0;
-            margemDeErroY=0;
+            margemXdErro=0;
+            margemYdErro=0;
+
         }else{
-            translacaoYBolinha = 0;
-            extremidadeSuperiorYBolinha = size;
-            extremidadeInferiorYBolinha = - size;
-            taxaAtualizacaoY = - taxaAtualizacaoY;
+            transYBola = 0;
+            superiorYBola = tamanho;
+            inferiorYBola = - tamanho;
+            taxaAttY = - taxaAttY;
 
-            translacaoXBolinha = 0;
-            extremidadeDireitaXBolinha = size;
+            transXBola = 0;
+            direitaXBola = tamanho;
 
-            margemDeErroX=0;
-            margemDeErroY=0;
+            margemXdErro=0;
+            margemYdErro=0;
         }
     }
-    public void resetarJogo(){
-        resetarPosicaoInicialBolinha();
-        taxaAtualizacaoY = velocidadeInicialY;
-        taxaAtualizacaoX = velocidadeInicialX;
+    public void restartDoJogo(){
+        restartPosicaoDaBolinha();
+        taxaAttY = velocidadeY;
+        taxaAttX = velocidadeX;
 
-        movimentacaoBarra=0;
-        extremidadeDireitaBarra = size*3;
-        extremidadeEsquerdaBarra =extremidadeDireitaBarra -(size*6);
+        movimentoBarrinha=0;
+        direitaBarrinha = tamanho*3;
+        esquerdaBarrinha =direitaBarrinha -(tamanho*6);
 
-        menuGameOver=false;
+        fimDoJogo=false;
         vidas = 5;
-        pontuacao = 0;
+        placar = 0;
         fase= 1;
     }
-    public void colisaoObstaculo(){
+    public void movimentarBola0(){
+        if (dandoPlay && vidas!=0){
+            transYBola+= taxaAttY;//inicia a movimentacao da bolinha no eixo y
+            superiorYBola =transYBola + tamanho + margemYdErro;//armazena a extremidade Y com base na translacao e tamanho do objeto( /2 porque a bolinha é iniciada no centro da janela )
+            inferiorYBola =transYBola - tamanho + margemYdErro;
 
-        if(extremidadeDireitaXBolinha >= -tamanhoObstaculo/2 && extremidadeEsquerdaXBolinha  <= tamanhoObstaculo/2){
-            if (extremidadeInferiorYBolinha  <= tamanhoObstaculo/2 && extremidadeInferiorYBolinha  >= tamanhoObstaculo/2 - 10 )// parte superior
-            {
-                //taxa crescente, eixo y
-                taxaAtualizacaoY = velocidadeInicialY + (5 * (fase-1));
+            transXBola+= taxaAttX;//inicia a movimentacao da bolinha no eixo X
+            direitaXBola =transXBola + tamanho + margemXdErro;//armazena a extremidade X
+            esquerdaXBola= transXBola - tamanho + margemXdErro;
 
-                if (taxaAtualizacaoX<0){
-                    taxaAtualizacaoX = -velocidadeInicialX - (5 * (fase-1));
-                } else {
-                    taxaAtualizacaoX = velocidadeInicialX + (5 * (fase - 1));
+            if(taxaAttX>= 0){
+                float pixeisAteParede = janela - direitaXBola;
+                float restoMargemDeErro = pixeisAteParede % taxaAttX;
+                if(restoMargemDeErro != 0){
+                    margemXdErro += restoMargemDeErro;
+                    direitaXBola += restoMargemDeErro;
+                    esquerdaXBola = direitaXBola - 100;
                 }
-            } else if (extremidadeSuperiorYBolinha >= - tamanhoObstaculo/2 && extremidadeSuperiorYBolinha <= - tamanhoObstaculo/2 + 10)// parte inferior
-            {
-                //taxa decrescente, eixo y
-                taxaAtualizacaoY = -velocidadeInicialY - (5 * (fase-1));
-
-                if (taxaAtualizacaoX<0){
-                    taxaAtualizacaoX = -velocidadeInicialX - (5 * (fase-1));
-                } else {
-                    taxaAtualizacaoX = velocidadeInicialX + (5 * (fase - 1));
+            }else{
+                float pixeisAteParede = - janela + esquerdaXBola;
+                float restoMargemDeErro = pixeisAteParede % taxaAttX;
+                if(restoMargemDeErro != 0){
+                    margemXdErro -= restoMargemDeErro;
+                    direitaXBola -= restoMargemDeErro;
+                    esquerdaXBola = direitaXBola - 100;
                 }
-            } else if (extremidadeInferiorYBolinha <= tamanhoObstaculo/2 && extremidadeSuperiorYBolinha >= -tamanhoObstaculo/2)
-            {
-                taxaAtualizacaoX = - taxaAtualizacaoX;
+            }
+            if(taxaAttY>=0){
+                float pixeisAteParede = janela - superiorYBola;
+                float restoMargemDeErro = pixeisAteParede % taxaAttY;
+                if(restoMargemDeErro != 0){
+                    margemYdErro += restoMargemDeErro;
+                    superiorYBola += restoMargemDeErro;
+                    inferiorYBola = superiorYBola - 100;
+                }
+            } else {
+                float pixeisAteBarra = (- 850) - inferiorYBola;
+
+                float restoMargemDeErro = pixeisAteBarra % taxaAttY;
+                if(restoMargemDeErro != 0){
+                    margemYdErro += restoMargemDeErro;
+                    inferiorYBola += restoMargemDeErro;
+                    superiorYBola = inferiorYBola + 100;
+                }
+            }
+            //verificar colisoes paredes
+            if(direitaXBola >= janela ){
+                taxaAttX = - taxaAttX;
+            } else if(esquerdaXBola <= (-janela)){
+                taxaAttX = - taxaAttX;
+            }
+            //verifica colisões teto/chão
+            if(superiorYBola >= 800f){
+                taxaAttY = - taxaAttY;
+            }else if(inferiorYBola <= -1100f ){
+                vidas-=1;
+                //resetando valores iniciaais
+                restartPosicaoDaBolinha();
             }
         }
     }
-
-        public void movimentarBarra(){
-
+    public void movimentacaoDaBarrinha(){
         //verifica colisao no eixo y
-        if(extremidadeDireitaXBolinha >= extremidadeEsquerdaBarra && extremidadeEsquerdaXBolinha <= extremidadeDireitaBarra){
-            if (extremidadeInferiorYBolinha == -800f)
+        if(direitaXBola >= esquerdaBarrinha && esquerdaXBola <= direitaBarrinha){
+            if (inferiorYBola == -850f)
             {
-                pontuacao+=50;
-                fase = (pontuacao/200)+1;
+                placar+=50;
+                fase = (placar/200)+1;
 
                 //taxa crescente, eixo y
-                taxaAtualizacaoY = velocidadeInicialY + (5 * (fase-1));
+                taxaAttY = velocidadeY + (5 * (fase-1));
 
                 Random ran = new Random();
                 int aleatorizaAcressimoX = ran.nextInt(6);
                 // bolinha continua o curso do eixo x que estava realizando
-                if (taxaAtualizacaoX<0){
-                    taxaAtualizacaoX = -velocidadeInicialX - (5 * (fase-1));//pode aumentar velocidade a depender da fase
-                    taxaAtualizacaoX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                if (taxaAttX<0){
+                    taxaAttX = -velocidadeX - (5 * (fase-1));//pode aumentar velocidade a depender da fase
+                    taxaAttX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
                 } else {
-                    taxaAtualizacaoX = velocidadeInicialX + (5 * (fase - 1));//pode aumentar velocidade a depender da fase
-                    taxaAtualizacaoX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                    taxaAttX = velocidadeX + (5 * (fase - 1));//pode aumentar velocidade a depender da fase
+                    taxaAttX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
                 }
             }else
-            if (extremidadeInferiorYBolinha <= -800f && extremidadeSuperiorYBolinha >= -850f)// parte superior + margem de erro
+            if (inferiorYBola <= -850f && superiorYBola >= -900f)// parte superior + margem de erro
             {
-                pontuacao+=50;
+                placar+=50;
 
-                fase = (pontuacao/200)+1;
+                fase = (placar/200)+1;
 
                 //taxa crescente, eixo y
-                taxaAtualizacaoY = velocidadeInicialY + (5 * (fase-1));
+                taxaAttY = velocidadeY + (5 * (fase-1));
 
                 Random ran = new Random();
                 int aleatorizaAcressimoX = ran.nextInt(6);
                 //se bater na lateral a bolinha vai para o lado oposto em relação ao eixo x
-                if (taxaAtualizacaoX < 0){
-                    taxaAtualizacaoX = velocidadeInicialX + (5 * (fase-1) );//pode aumentar velocidade a depender da fase
-                    taxaAtualizacaoX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                if (taxaAttX < 0){
+                    taxaAttX = velocidadeX + (5 * (fase-1) );//pode aumentar velocidade a depender da fase
+                    taxaAttX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
                 } else {
-                    taxaAtualizacaoX = -velocidadeInicialX - (5 * (fase - 1));//pode aumentar velocidade a depender da fase
-                    taxaAtualizacaoX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                    taxaAttX = -velocidadeX - (5 * (fase - 1));//pode aumentar velocidade a depender da fase
+                    taxaAttX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
                 }
             }
         }
-
     }
 
-    public void movimentarBolinha(){
-        if (jogoIniciado && vidas!=0){
-            translacaoYBolinha+= taxaAtualizacaoY;//inicia a movimentacao da bolinha no eixo y
-            extremidadeSuperiorYBolinha =translacaoYBolinha + size + margemDeErroY;//armazena a extremidade Y com base na translacao e tamanho do objeto( /2 porque a bolinha é iniciada no centro da janela )
-            extremidadeInferiorYBolinha =translacaoYBolinha - size + margemDeErroY;
-
-            translacaoXBolinha+= taxaAtualizacaoX;//inicia a movimentacao da bolinha no eixo X
-            extremidadeDireitaXBolinha =translacaoXBolinha + size + margemDeErroX;//armazena a extremidade X
-            extremidadeEsquerdaXBolinha= translacaoXBolinha - size + margemDeErroX;
-            
-            if(taxaAtualizacaoX>= 0){
-                float pixeisAteParede = extremidadeJanela - extremidadeDireitaXBolinha;
-                float restoMargemDeErro = pixeisAteParede % taxaAtualizacaoX;
-                if(restoMargemDeErro != 0){
-                    margemDeErroX += restoMargemDeErro;
-                    extremidadeDireitaXBolinha += restoMargemDeErro;
-                    extremidadeEsquerdaXBolinha = extremidadeDireitaXBolinha - 100;
-                }
-            }else{
-                float pixeisAteParede = - extremidadeJanela + extremidadeEsquerdaXBolinha;
-                float restoMargemDeErro = pixeisAteParede % taxaAtualizacaoX;
-                if(restoMargemDeErro != 0){
-                    margemDeErroX -= restoMargemDeErro;
-                    extremidadeDireitaXBolinha -= restoMargemDeErro;
-                    extremidadeEsquerdaXBolinha = extremidadeDireitaXBolinha - 100;
-                }
-            }
-            if(taxaAtualizacaoY>=0){
-                float pixeisAteParede = extremidadeJanela - extremidadeSuperiorYBolinha;
-                float restoMargemDeErro = pixeisAteParede % taxaAtualizacaoY;
-                if(restoMargemDeErro != 0){
-                    margemDeErroY += restoMargemDeErro;
-                    extremidadeSuperiorYBolinha += restoMargemDeErro;
-                    extremidadeInferiorYBolinha = extremidadeSuperiorYBolinha - 100;
-                }
-            } else {
-                float pixeisAteBarra = (- 800) - extremidadeInferiorYBolinha;
-
-                float restoMargemDeErro = pixeisAteBarra % taxaAtualizacaoY;
-                if(restoMargemDeErro != 0){
-                    margemDeErroY += restoMargemDeErro;
-                    extremidadeInferiorYBolinha += restoMargemDeErro;
-                    extremidadeSuperiorYBolinha = extremidadeInferiorYBolinha + 100;
-                }
-            }
-
-            //verificar colisoes paredes
-            if(extremidadeDireitaXBolinha >= extremidadeJanela ){
-                taxaAtualizacaoX = - taxaAtualizacaoX;
-            } else if(extremidadeEsquerdaXBolinha <= (-extremidadeJanela)){
-                taxaAtualizacaoX = - taxaAtualizacaoX;
-            }
-            //verifica colisões teto/chão
-            if(extremidadeSuperiorYBolinha >= extremidadeJanela){
-                taxaAtualizacaoY = - taxaAtualizacaoY;
-            }else if(extremidadeInferiorYBolinha <= - extremidadeJanela ){
-                vidas-=1;
-                //resetando valores iniciaais
-                resetarPosicaoInicialBolinha();
-            }
-        }
-    }
     @Override
-    public void init(GLAutoDrawable drawable) {
-        //dados iniciais da cena
+    public void init(GLAutoDrawable drawable){
         GL2 gl = drawable.getGL().getGL2();
-        //Estabelece as coordenadas do SRU (Sistema de Referencia do Universo)
-//        xMin = yMin = zMin = -extremidadeJanela;
-//        xMax = yMax = zMax = extremidadeJanela;
-        xMin = -Renderer.screenWidth;
-        xMax = Renderer.screenWidth;
-        yMin = -Renderer.screenHeight;
-        yMax = Renderer.screenHeight;
-        zMin = -extremidadeJanela;
-        zMax = extremidadeJanela;
+        //SRU
+        xMin = - 1920;
+        xMax = 1920;
+        yMin = - 1080;
+        yMax = 1080;
+        zMin = - 1000;
+        zMax = 1000;
 
-        //configurações de texto
-        textRenderer = new TextRenderer(new Font("Serif", Font.BOLD, 30));
+        reset();
 
-        //Habilita o buffer de profundidade
+        textRenderer = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 25));
+        textRenderer1 = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 35));
+
         gl.glEnable(GL2.GL_DEPTH_TEST);
     }
 
     @Override
-    public void display(GLAutoDrawable drawable) {
+    public void display(GLAutoDrawable drawable){
+        //obtem o contexto Opengl
         GL2 gl = drawable.getGL().getGL2();
         GLUT glut = new GLUT();
-
-        gl.glClearColor(0, 0, 0, 1);
-
+        //cor da janela - Branco
+        gl.glClearColor(1, 1, 1, 1);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-        gl.glLoadIdentity(); //ler a matriz identidade
+        gl.glLoadIdentity();
 
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, mode);
 
-        iluminacaoDifusa(gl);
+        iluminacaoAmbiente(gl);
         ligarLuz(gl);
 
-        if (menuPrincipalAtivado){
-                gerarTexto(gl, 450, 850, Color.white ,"PONG");
-                gerarTexto(gl, 150, 700, Color.white ,"Como Jogar:");
-                gerarTexto(gl, 150, 650, Color.white ,"Use Esc para fechar o jogo");
-                gerarTexto(gl, 150, 600, Color.white ,"<-  Movimentar barra p/ esquerda");
-                gerarTexto(gl, 150, 550, Color.white ,"->  Movimentar barra p/ direita");
-                gerarTexto(gl, 150, 450, Color.white ,"Selecione a tecla 'c' para mudar a cor da bolinha:");
-                gl.glPushMatrix();
-                translacaoXBolinha = 0;
-                translacaoYBolinha = 0;
-                gl.glTranslatef(0, -250, 0);
-                bolinha(gl,glut, vermelhoBolinha, verdeBolinha, azulBolinha);
-                gl.glPopMatrix();
-                gerarTexto(gl, 275, 250, Color.white ,"Aperte espaço para começar/pausar o jogo");
-        } else if (jogoIniciado && vidas != 0) {//começar os desenhos
-            bordas(gl,glut,vermelhoBorda,verdeBorda, azulBorda);
-            fundoJogo(gl,glut, vermelhoFundo, azulFundo, verdeFundo);
-            gerarTexto(gl, 800, 950, Color.white ,"Score");
-            gerarTexto(gl, 800, 900, Color.white , String.valueOf(pontuacao));
-            gerarTexto(gl, 800, 850, Color.white ,"Fase");
-            gerarTexto(gl, 820, 800, Color.white , String.valueOf(fase));
+        if(fase==2){
+            iluminacaoDifusa(gl);
+            ligarLuz(gl);
+        }
+
+        if(Menu){
+            bordaInicio(gl,glut);
+            sol(gl,glut);
+            desenhaTexto(gl, 700, 690, Color.BLACK, "Seja bem-vindo ao nosso jogo - PONG!");
+            desenhaTexto(gl, 880, 650, Color.BLACK, "REGRAS:");
+            desenhaTexto(gl, 230, 620, Color.BLACK, "Para jogar use as teclas da seta esquerda (para andar a esquerda) e a seta direita (para andar a direita) do teclado!");
+            desenhaTexto(gl, 720, 590, Color.BLACK, "Para PAUSAR o jogo aperte a tecla P!");
+            desenhaTexto(gl, 680, 559, Color.BLACK, "Para começar o jogo aperte a tecla ENTER!");
+            desenhaTexto(gl, 720, 530, Color.BLACK, "Para sair do jogo aperte a tecla ESC!");
+
+        }else if(dandoPlay && vidas != 0){
+            bola0(gl,glut);
+            vida1(gl,glut);
+            vida2(gl,glut);
+            vida3(gl,glut);
+            vida4(gl,glut);
+            vida5(gl,glut);
+            borda(gl,glut);
+            faixaCentro(gl, glut);
+            faixaDireita(gl,glut);
+            faixaEsquerda(gl,glut);
+            campo(gl,glut);
+            tri(gl,glut);
+            barrinha(gl, glut);
+            movimentacaoDaBarrinha();
+            desenhaTexto1(gl, 30, 1000, Color.BLACK, "LEVEL " + fase);
+            desenhaTexto1(gl, 1600, 1000, Color.BLACK, "SCORE " + placar);
 
             if (vidas!= 0) {
-                bolinha(gl, glut, vermelhoBolinha, verdeBolinha, azulBolinha);
-                movimentarBolinha();
+                bola0(gl, glut);
+                movimentarBola0();
 
-                barra(gl, glut, vermelhoBarra, verdeBarra, azulBarra);
-                movimentarBarra();
+                barrinha(gl, glut);
+                movimentacaoDaBarrinha();
 
                 if (fase >= 2) {
-                    obstaculo(gl, glut);
-                    colisaoObstaculo();
+                    //obstaculo(gl, glut);
+                    //colisaoObstaculo();
                 }
             }
-        } else if (menuPausaAtivado) {
-                gerarTexto(gl, 450, 500, Color.white ,"PAUSE");
-                gerarTexto(gl, 275, 250, Color.white ,"Aperte espaço para voltar ao jogo");
-                gerarTexto(gl, 175, 190, Color.white ,"Aperte 'm' para voltar ao Menu");
-                gerarTexto(gl, 580, 190, Color.red ,"(Perderá o Progresso!)");
 
-        } else if (vidas == 0){
-            menuGameOver = true;
-            gerarTexto(gl, 425, 500, Color.red ,"Game Over");
-            gerarTexto(gl, 275, 250, Color.white ,"Aperte  espaço  para  reiniciar !!");
+        }else if(pause){
+            desenhaTexto(gl, 800, 700, Color.BLACK, "O jogo está Pausado!");
+            desenhaTexto(gl, 710, 650, Color.BLACK, "Aperte a letra P para continuar o jogo!");
         }
+        else if (vidas == 0){
+            fimDoJogo = true;
+        desenhaTexto(gl, 500, 500, Color.red ,"Game Over");
+        desenhaTexto(gl, 275, 250, Color.red ,"Aperte a Barra de Espaço para  reiniciar !!");
+    }
         gl.glFlush();
     }
-
-    public void bordas(GL2 gl,GLUT glut, float r, float g, float b){
+    public void borda(GL2 gl, GLUT glut){
         gl.glPushMatrix();
-        gl.glColor3f(r, g, b);
-        gl.glLineWidth(1f);
+        gl.glColor3f(0,0,0);
+        gl.glLineWidth(100f);
         gl.glBegin(GL.GL_LINE_LOOP);
-            gl.glVertex2f(-1000,1000);
-            gl.glVertex2f(1000,1000);
-            gl.glVertex2f(1000,-1000);
-            gl.glVertex2f(-1000,-1000);
-            gl.glVertex2f(-1000,1000);
+        gl.glVertex2f(1880,820);
+        gl.glVertex2f(1880,-1020);
+        gl.glVertex2f(-1880,-1020);
+        gl.glVertex2f(-1880,820);
         gl.glEnd();
         gl.glPopMatrix();
     }
-        public void fundoJogo(GL2 gl,GLUT glut, float r, float g, float b){
-            gl.glPushMatrix();
-            gl.glTranslatef(0,0,-100);
-            gl.glColor3f(r, g, b);
-            gl.glLineWidth(1f);
-            gl.glBegin(gl.GL_QUADS);
-            gl.glVertex2f(-975,975);
-            gl.glVertex2f(975,975);
-            gl.glVertex2f(975,-975);
-            gl.glVertex2f(-975,-975);
-            gl.glVertex2f(-975,975);
-            gl.glEnd();
-            gl.glPopMatrix();
-        }
-    public void bolinha(GL2 gl,GLUT glut, float r, float g, float b){
+    public void bordaInicio(GL2 gl, GLUT glut){
         gl.glPushMatrix();
-        gl.glTranslatef(translacaoXBolinha, translacaoYBolinha, 0);
-        gl.glTranslatef(margemDeErroX,margemDeErroY,0);
-        // Aplica os valores convertidos:
-        gl.glColor3f(r, g, b);
-        glut.glutSolidSphere(size,500,500);
-        gl.glPopMatrix();
-    }
-
-    public void barra(GL2 gl, GLUT glut, float r, float g, float b){
-        gl.glPushMatrix();
-        gl.glTranslatef(movimentacaoBarra,0,0);
-        gl.glBegin(GL2.GL_POLYGON);
-            gl.glVertex2f(-150, -100);
-            gl.glVertex2f(150, -100);
-            gl.glVertex2f(150, -250);
-            gl.glVertex2f(-150, -250);
+        gl.glColor3f(1,0,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(1550,500);
+        gl.glVertex2f(1550,-150);
+        gl.glVertex2f(-1550,-150);
+        gl.glVertex2f(-1550,500);
         gl.glEnd();
         gl.glPopMatrix();
     }
-
-    public void obstaculo(GL2 gl, GLUT glut){
+    public void sol(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(transXBola, transYBola, 0);
+        gl.glTranslatef(950, 1050, 0);
+        gl.glColor3f(1,1,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void faixaCentro(GL2 gl, GLUT glut){
         gl.glPushMatrix();
         gl.glColor3f(1,1,1);
-        tamanhoObstaculo = tamanhoInicialObstaculo + (20 * (fase-1));
-        glut.glutSolidCube(tamanhoObstaculo);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(10,810);
+        gl.glVertex2f(10,-1000);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void faixaDireita(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(1,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(1200,500);
+        gl.glVertex2f(1200,-750);
+        gl.glVertex2f(1800,-750);
+        gl.glVertex2f(1800,500);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void faixaEsquerda(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(1,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(-1200,500);
+        gl.glVertex2f(-1200,-750);
+        gl.glVertex2f(-1800,-750);
+        gl.glVertex2f(-1800,500);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void campo(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(0,1,0);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL2.GL_QUAD_STRIP);
+        gl.glVertex2f(1900,820);
+        gl.glVertex2f(1900,-1000);
+        gl.glVertex2f(-1900,-1000);
+        gl.glVertex2f(-1900,820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void tri(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(0, 1, 0);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL2.GL_TRIANGLES);
+        gl.glVertex2f(1900,820);
+        gl.glVertex2f(1900,-1000);
+        gl.glVertex2f(-1900,-1000);
+        gl.glVertex2f(-1900,820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void bola0(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(transXBola, transYBola, 0);
+        gl.glTranslatef(margemXdErro,margemYdErro,0);
+        // Aplica os valores convertidos:
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void vida1(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 0);
+        gl.glTranslatef(-1250, 965, 0);//mantem a bola no ponto quando começar
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void vida2(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 0);
+        gl.glTranslatef(-1050, 965, 0);//mantem a bola no ponto quando começar
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void vida3(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 0);
+        gl.glTranslatef(-850, 965, 0);//mantem a bola no ponto quando começar
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void vida4(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 0);
+        gl.glTranslatef(-650, 965, 0);//mantem a bola no ponto quando começar
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void vida5(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 0);
+        gl.glTranslatef(-450, 965, 0);//mantem a bola no ponto quando começar
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void barrinha(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(1,0,1);
+        gl.glTranslatef(movimentoBarrinha,0,1);
+        gl.glBegin(GL2.GL_POLYGON);
+        gl.glVertex2f(-250, -800);
+        gl.glVertex2f(250, -800);
+        gl.glVertex2f(250, -850);
+        gl.glVertex2f(-250, -850);
+        gl.glEnd();
         gl.glPopMatrix();
     }
 
-
-    public void gerarTexto(GL2 gl, int xPosicao, int yPosicao, Color cor, String texto){
+    public void desenhaTexto(GL2 gl, int xPosicao, int yPosicao, Color cor, String frase){
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
         //Retorna a largura e altura da janela
-        textRenderer.beginRendering(1000, 1000);
+        textRenderer.beginRendering(Renderer.screenWidth, Renderer.screenHeight);
         textRenderer.setColor(cor);
-        textRenderer.draw(texto, xPosicao, yPosicao);
+        textRenderer.draw(frase, xPosicao, yPosicao);
         textRenderer.endRendering();
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, mode);
+    }
+
+    public void desenhaTexto1(GL2 gl, int xPosicao, int yPosicao, Color cor, String frase){
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+        //Retorna a largura e altura da janela
+        textRenderer1.beginRendering(Renderer.screenWidth, Renderer.screenHeight);
+        textRenderer1.setColor(cor);
+        textRenderer1.draw(frase, xPosicao, yPosicao);
+        textRenderer1.endRendering();
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, mode);
+    }
+
+    public void iluminacaoAmbiente(GL2 gl) {
+        float luzAmbiente[] = {2.0f, 2.0f, 2.0f, 1.0f};
+        float posicaoLuz[] = {-50.0f, 0.0f, 100.0f, 1.0f};
+
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, luzAmbiente, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, posicaoLuz, 0);
     }
 
     public void iluminacaoDifusa(GL2 gl) {
@@ -419,7 +483,7 @@ public class Cena implements GLEventListener{
     }
 
     @Override
-    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height){
         //obtem o contexto grafico Opengl
         GL2 gl = drawable.getGL().getGL2();
 
@@ -435,7 +499,6 @@ public class Cena implements GLEventListener{
         gl.glLoadIdentity(); //ler a matriz identidade
         System.out.println("Reshape: " + width + ", " + height);
     }
-
     @Override
-    public void dispose(GLAutoDrawable drawable) {}
+    public void dispose(GLAutoDrawable drawable){}
 }
