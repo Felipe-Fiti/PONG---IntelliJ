@@ -15,15 +15,20 @@ public class KeyBoard implements KeyListener{
         System.out.println("Key pressed: " + e.getKeyCode());
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             exit(0);
-        switch (e.getKeyChar()) {
-
-        }
 
         switch (e.getKeyCode()){
             case 80://TECLA P - Pause/Stop do jogo
                 cena.pause =! cena.pause;
                 cena.Menu = false;
                 cena.dandoPlay =! cena.pause;
+
+                if (cena.fimDoJogo){
+                    cena.restartDoJogo();
+                } else{
+                    cena.dandoPlay=!cena.dandoPlay;
+                    cena.Menu=false;
+                    cena.pause=!cena.dandoPlay;
+                }
                 break;
             case 13://Tecla ENTER - Start Jogo
                 cena.dandoPlay = true;
@@ -43,6 +48,14 @@ public class KeyBoard implements KeyListener{
                     cena.esquerdaBarrinha = cena.velDoMovimentarDaBarra - 300;
                 }
                 break;
+            case 32://Barra de Espaço
+                if (cena.fimDoJogo){
+                    cena.restartDoJogo();
+                } else{
+                    cena.dandoPlay=!cena.dandoPlay;
+                    cena.Menu=false;
+                    cena.pause=!cena.dandoPlay;
+                }
         }
     }
     @Override
