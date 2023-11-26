@@ -15,6 +15,9 @@ public class KeyBoard implements KeyListener{
         System.out.println("Key pressed: " + e.getKeyCode());
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             exit(0);
+        switch (e.getKeyChar()) {
+
+        }
 
         switch (e.getKeyCode()){
             case 80://TECLA P - Pause/Stop do jogo
