@@ -389,6 +389,42 @@ public class Cena implements GLEventListener{
         gl.glEnd();
         gl.glPopMatrix();
     }
+    public void camiseta(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 50);
+        gl.glColor3f(1, 1, 0);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(300, -100);
+        gl.glVertex2f(700, -100);
+        gl.glVertex2f(700, -820);
+        gl.glVertex2f(300, -820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void camisetaMangaDireita(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(1, 1, 0);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(850, -300);
+        gl.glVertex2f(750, -300);
+        gl.glVertex2f(650, -100);
+        gl.glVertex2f(750, -100);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void camisetaMangaEsquerda(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(1, 1, 0);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(150, -300);
+        gl.glVertex2f(250, -300);
+        gl.glVertex2f(350, -100);
+        gl.glVertex2f(250, -100);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
     public void iluminacaoAmbiente(GL2 gl){
         float luzAmbiente[] = {2.0f, 2.0f, 2.0f, 1.0f};
         float posicaoLuz[] = {-50.0f, 0.0f, 100.0f, 1.0f};
@@ -621,8 +657,12 @@ public class Cena implements GLEventListener{
             faixaVestario2(gl,glut);
             faixaVestario3(gl,glut);
             faixaVestario4(gl,glut);
+            camiseta(gl,glut);
+            camisetaMangaEsquerda(gl,glut);
+            camisetaMangaDireita(gl,glut);
             desenhaTexto(gl, 820, 900, Color.BLACK, "O jogo está Pausado!");
             desenhaTexto(gl, 710, 830, Color.BLACK, "Aperte a letra P para continuar o jogo!");
+            desenhaTexto(gl, 1166, 350, Color.BLACK, "FELIPE");
         }
         gl.glFlush();
     }
