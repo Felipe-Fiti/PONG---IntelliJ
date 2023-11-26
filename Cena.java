@@ -15,7 +15,9 @@ public class Cena implements GLEventListener{
     public int vidas = 5;
     public int fase = 1;
     public float tamanho = 85;
-    public float tamanhoB = 100;
+    public float tamanhoB = 80;
+    public float tamanhoR = 40;
+    public float tamanhoS = 400;
     public final float tamanhoPrimarioDoObstaculo = 100;
     public float tamanhoNormalDoObstaculo = tamanhoPrimarioDoObstaculo + (20 * (fase-1));
     public float movimentoBarrinha = 0;
@@ -30,14 +32,31 @@ public class Cena implements GLEventListener{
     public float taxaAttX = 60f , taxaAttY = 45f;
     public float direitaBarrinha = tamanho*3 , esquerdaBarrinha =direitaBarrinha -(tamanho*6);
     public float Ybarrinha = -900 ;
-    //public final float InicioTriangulo = 100;
-    //public float triangulo =100;
     public boolean dandoPlay = false;
     public boolean Menu = true;
     public boolean pause = false;
     public boolean fimDoJogo = false;
     public int mode;
     public final float velDoMovimentarDaBarra = 100;
+    private float movimentaFaixa = 0;
+
+    @Override
+    public void init(GLAutoDrawable drawable){
+        GL2 gl = drawable.getGL().getGL2();
+        //SRU
+        xMin = - 1920;
+        xMax = 1920;
+        yMin = - 1080;
+        yMax = 1080;
+        zMin = - 1000;
+        zMax = 1000;
+
+        reset();
+
+        textRenderer = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 25));
+        textRenderer1 = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 35));
+        gl.glEnable(GL2.GL_DEPTH_TEST);
+    }
 
     public void reset(){
         placar = 0;
@@ -45,10 +64,342 @@ public class Cena implements GLEventListener{
         fase = 1;
         mode = GL2.GL_FILL;
     }
+
     public void continuarJogo(){
         placar = 0;
         vidas = 5;
         fase = 1;
+    }
+
+    public void borda(GL2 gl, GLUT glut){//Borda tela JOGO
+        gl.glPushMatrix();
+        gl.glColor3f(0,0,0);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(1880,820);
+        gl.glVertex2f(1880,-1020);
+        gl.glVertex2f(-1880,-1020);
+        gl.glVertex2f(-1880,820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void bordaInicio(GL2 gl, GLUT glut){ //Borda tela INICIO
+        gl.glPushMatrix();
+        gl.glColor3f(1,0,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(1550,500);
+        gl.glVertex2f(1550,-150);
+        gl.glVertex2f(-1550,-150);
+        gl.glVertex2f(-1550,500);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void bordaPause(GL2 gl, GLUT glut){ //Borda tela PAUSE
+        gl.glPushMatrix();
+        gl.glColor3f(1,0.64f,0);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(720,900);
+        gl.glVertex2f(720,450);
+        gl.glVertex2f(-750,450);
+        gl.glVertex2f(-750,900);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void sol(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(1900, 950, 0);
+        gl.glColor3f(1,1,0);
+        glut.glutSolidSphere(tamanhoS,500,500);
+        gl.glPopMatrix();
+    }
+    public void estrada(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(0.5f,0.5f,0.5f);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL2.GL_POLYGON);
+        gl.glVertex2f(-2000,-500);
+        gl.glVertex2f(2000,-500);
+        gl.glVertex2f(2000,-1100);
+        gl.glVertex2f(-2000,-1100);
+        gl.glVertex2f(-2000,-1100);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void faixaEstrada(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(movimentaFaixa, 0, 10);
+        gl.glColor3f(1, 1, 0);
+        gl.glLineWidth(100f);
+        for (int i = 0; i < 7; i++) {
+            gl.glBegin(GL.GL_LINE_LOOP);
+            gl.glVertex2f(-1920+(350*(i*2)), -750);
+            gl.glVertex2f(-1570+(350*(i*2)), -750);
+            gl.glEnd();
+        }
+        gl.glPopMatrix();
+    }
+    public void carro(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 50);
+        gl.glColor3f(0, 0, 1);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(-0, -400);
+        gl.glVertex2f(500, -400);
+        gl.glVertex2f(500, -620);
+        gl.glVertex2f(-0, -620);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void carroJanela(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(1, 1, 1);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(420, -570);
+        gl.glVertex2f(490, -570);
+        gl.glVertex2f(490, -420);
+        gl.glVertex2f(420, -420);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void carroRoda(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glTranslatef(100, -620, 0);
+        gl.glColor3f(0,0,0);
+        glut.glutSolidSphere(tamanhoR,500,500);
+        gl.glPopMatrix();
+    }
+    public void carroRoda1(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glTranslatef(450, -620, 0);
+        gl.glColor3f(0,0,0);
+        glut.glutSolidSphere(tamanhoR,500,500);
+        gl.glPopMatrix();
+    }
+    public void faixaCentro(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(1,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(10,900);
+        gl.glVertex2f(10,-1000);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void faixaDireita(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(1,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(1200,500);
+        gl.glVertex2f(1200,-750);
+        gl.glVertex2f(1800,-750);
+        gl.glVertex2f(1800,500);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void faixaEsquerda(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(1,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(-1200,500);
+        gl.glVertex2f(-1200,-750);
+        gl.glVertex2f(-1800,-750);
+        gl.glVertex2f(-1800,500);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void campo(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(0,1,0);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL2.GL_QUAD_STRIP);
+        gl.glVertex2f(1900,820);
+        gl.glVertex2f(1900,-1000);
+        gl.glVertex2f(-1900,-1000);
+        gl.glVertex2f(-1900,820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void tri(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(0, 1, 0);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL2.GL_TRIANGLES);
+        gl.glVertex2f(1900,820);
+        gl.glVertex2f(1900,-1000);
+        gl.glVertex2f(-1900,-1000);
+        gl.glVertex2f(-1900,820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void barrinha(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0,-900,0);
+        gl.glTranslatef(movimentoBarrinha,0,0);
+        float x = (float) -(tamanhoB*2);
+        for (int i = 0; i < 6 ; i++) {
+            gl.glPushMatrix();
+            gl.glTranslatef(x,0,0);
+            gl.glColor3f(0,1,1);
+            glut.glutSolidCube(tamanhoB);
+            gl.glPopMatrix();
+            x+=tamanhoB;
+        }
+        gl.glPopMatrix();
+    }
+    public void bola0(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(transXBola, transYBola, 0);
+        gl.glTranslatef(margemXdErro,margemYdErro,0);
+        // Aplica os valores convertidos:
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void vida1(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 0);
+        gl.glTranslatef(-1250, 965, 0);
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void vida2(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 0);
+        gl.glTranslatef(-1050, 965, 0);
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void vida3(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 0);
+        gl.glTranslatef(-850, 965, 0);
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void vida4(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 0);
+        gl.glTranslatef(-650, 965, 0);
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void vida5(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 0);
+        gl.glTranslatef(-450, 965, 0);
+        gl.glColor3f(1,0,0);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
+    public void vestiario(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glColor3f(0.5f,0.5f,0.5f);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL2.GL_POLYGON);
+        gl.glVertex2f(-1900,300);
+        gl.glVertex2f(1900,300);
+        gl.glVertex2f(1900,-1050);
+        gl.glVertex2f(-1900,-1050);
+        gl.glVertex2f(-1900,-1050);
+        gl.glEnd();
+        gl.glPopMatrix();
+        gl.glPopMatrix();
+    }
+    public void bordaVestiario(GL2 gl, GLUT glut){ //Borda tela INICIO
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(0,0,0);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(1868,268);
+        gl.glVertex2f(1868,-1020);
+        gl.glVertex2f(-1868,-1020);
+        gl.glVertex2f(-1868,268);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void faixaVestario1(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0,0,80);
+        gl.glColor3f(1,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(1000,230);
+        gl.glVertex2f(1000,-980);
+        gl.glVertex2f(1800,-980);
+        gl.glVertex2f(1800,230);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void faixaVestario2(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0,0,80);
+        gl.glColor3f(0,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(100,230);
+        gl.glVertex2f(100,-980);
+        gl.glVertex2f(920,-980);
+        gl.glVertex2f(920,230);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void faixaVestario3(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0,0,80);
+        gl.glColor3f(1,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(-800,230);
+        gl.glVertex2f(-800,-980);
+        gl.glVertex2f(20,-980);
+        gl.glVertex2f(20,230);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void faixaVestario4(GL2 gl, GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0,0,80);
+        gl.glColor3f(0,1,1);
+        gl.glLineWidth(100f);
+        gl.glBegin(GL.GL_LINE_LOOP);
+        gl.glVertex2f(-1800,230);
+        gl.glVertex2f(-1800,-980);
+        gl.glVertex2f(-880,-980);
+        gl.glVertex2f(-880,230);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void iluminacaoAmbiente(GL2 gl){
+        float luzAmbiente[] = {2.0f, 2.0f, 2.0f, 1.0f};
+        float posicaoLuz[] = {-50.0f, 0.0f, 100.0f, 1.0f};
+
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, luzAmbiente, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, posicaoLuz, 0);
+    }
+    public void iluminacaoDifusa(GL2 gl){
+        float luzDifusa[] = {1.0f, 1.0f, 1.0f, 1.0f};
+        float posicaoLuz[] = {-50.0f, -5.0f, 100.0f, 0.0f};
+
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, luzDifusa, 0);
+        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, posicaoLuz, 0);
+    }
+    public void ligarLuz(GL2 gl){
+        gl.glEnable(GL2.GL_COLOR_MATERIAL);
+        gl.glEnable(GL2.GL_LIGHTING);
+        gl.glEnable(GL2.GL_LIGHT0);
+        gl.glShadeModel(GL2.GL_SMOOTH);
     }
     public void restartPosicaoDaBolinha(){
         if (fase>=2){
@@ -197,25 +548,6 @@ public class Cena implements GLEventListener{
     }
 
     @Override
-    public void init(GLAutoDrawable drawable){
-        GL2 gl = drawable.getGL().getGL2();
-        //SRU
-        xMin = - 1920;
-        xMax = 1920;
-        yMin = - 1080;
-        yMax = 1080;
-        zMin = - 1000;
-        zMax = 1000;
-
-        reset();
-
-        textRenderer = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 25));
-        textRenderer1 = new TextRenderer(new Font("Comic Sans MS Negrito", Font.BOLD, 35));
-
-        gl.glEnable(GL2.GL_DEPTH_TEST);
-    }
-
-    @Override
     public void display(GLAutoDrawable drawable){
         //obtem o contexto Opengl
         GL2 gl = drawable.getGL().getGL2();
@@ -224,20 +556,17 @@ public class Cena implements GLEventListener{
         gl.glClearColor(1, 1, 1, 1);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
-
-        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, mode);
-
-        iluminacaoAmbiente(gl);
-        ligarLuz(gl);
-
-        if(fase==2){
-            iluminacaoDifusa(gl);
-            ligarLuz(gl);
-        }
-
         if(Menu){
             bordaInicio(gl,glut);
             sol(gl,glut);
+            estrada(gl, glut);
+            carro(gl,glut);
+            carroJanela(gl,glut);
+            carroRoda(gl,glut);
+            carroRoda1(gl,glut);
+            faixaEstrada(gl, glut);
+            movimentaFaixa -= 20;
+            if (movimentaFaixa <= -650){movimentaFaixa =0;}
             desenhaTexto(gl, 700, 690, Color.BLACK, "Seja bem-vindo ao nosso jogo - PONG!");
             desenhaTexto(gl, 880, 650, Color.BLACK, "REGRAS:");
             desenhaTexto(gl, 230, 620, Color.BLACK, "Para jogar use as teclas da seta esquerda (para andar a esquerda) e a seta direita (para andar a direita) do teclado!");
@@ -277,166 +606,17 @@ public class Cena implements GLEventListener{
             }
 
         }else if(pause){
-            desenhaTexto(gl, 800, 700, Color.BLACK, "O jogo está Pausado!");
-            desenhaTexto(gl, 710, 650, Color.BLACK, "Aperte a letra P para continuar o jogo!");
+            bordaPause(gl,glut);
+            vestiario(gl,glut);
+            bordaVestiario(gl,glut);
+            faixaVestario1(gl,glut);
+            faixaVestario2(gl,glut);
+            faixaVestario3(gl,glut);
+            faixaVestario4(gl,glut);
+            desenhaTexto(gl, 820, 900, Color.BLACK, "O jogo está Pausado!");
+            desenhaTexto(gl, 710, 830, Color.BLACK, "Aperte a letra P para continuar o jogo!");
         }
-        else if (vidas == 0){
-            fimDoJogo = true;
-        desenhaTexto(gl, 500, 500, Color.red ,"Game Over");
-        desenhaTexto(gl, 275, 250, Color.red ,"Aperte a Barra de Espaço para  reiniciar !!");
-    }
         gl.glFlush();
-    }
-    public void borda(GL2 gl, GLUT glut){
-        gl.glPushMatrix();
-        gl.glColor3f(0,0,0);
-        gl.glLineWidth(100f);
-        gl.glBegin(GL.GL_LINE_LOOP);
-        gl.glVertex2f(1880,820);
-        gl.glVertex2f(1880,-1020);
-        gl.glVertex2f(-1880,-1020);
-        gl.glVertex2f(-1880,820);
-        gl.glEnd();
-        gl.glPopMatrix();
-    }
-    public void bordaInicio(GL2 gl, GLUT glut){
-        gl.glPushMatrix();
-        gl.glColor3f(1,0,1);
-        gl.glLineWidth(100f);
-        gl.glBegin(GL.GL_LINE_LOOP);
-        gl.glVertex2f(1550,500);
-        gl.glVertex2f(1550,-150);
-        gl.glVertex2f(-1550,-150);
-        gl.glVertex2f(-1550,500);
-        gl.glEnd();
-        gl.glPopMatrix();
-    }
-    public void sol(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(transXBola, transYBola, 0);
-        gl.glTranslatef(950, 1050, 0);
-        gl.glColor3f(1,1,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
-    }
-    public void faixaCentro(GL2 gl, GLUT glut){
-        gl.glPushMatrix();
-        gl.glColor3f(1,1,1);
-        gl.glLineWidth(100f);
-        gl.glBegin(GL.GL_LINE_LOOP);
-        gl.glVertex2f(10,810);
-        gl.glVertex2f(10,-1000);
-        gl.glEnd();
-        gl.glPopMatrix();
-    }
-    public void faixaDireita(GL2 gl, GLUT glut){
-        gl.glPushMatrix();
-        gl.glColor3f(1,1,1);
-        gl.glLineWidth(100f);
-        gl.glBegin(GL.GL_LINE_LOOP);
-        gl.glVertex2f(1200,500);
-        gl.glVertex2f(1200,-750);
-        gl.glVertex2f(1800,-750);
-        gl.glVertex2f(1800,500);
-        gl.glEnd();
-        gl.glPopMatrix();
-    }
-    public void faixaEsquerda(GL2 gl, GLUT glut){
-        gl.glPushMatrix();
-        gl.glColor3f(1,1,1);
-        gl.glLineWidth(100f);
-        gl.glBegin(GL.GL_LINE_LOOP);
-        gl.glVertex2f(-1200,500);
-        gl.glVertex2f(-1200,-750);
-        gl.glVertex2f(-1800,-750);
-        gl.glVertex2f(-1800,500);
-        gl.glEnd();
-        gl.glPopMatrix();
-    }
-    public void campo(GL2 gl, GLUT glut){
-        gl.glPushMatrix();
-        gl.glColor3f(0,1,0);
-        gl.glLineWidth(100f);
-        gl.glBegin(GL2.GL_QUAD_STRIP);
-        gl.glVertex2f(1900,820);
-        gl.glVertex2f(1900,-1000);
-        gl.glVertex2f(-1900,-1000);
-        gl.glVertex2f(-1900,820);
-        gl.glEnd();
-        gl.glPopMatrix();
-    }
-    public void tri(GL2 gl, GLUT glut){
-        gl.glPushMatrix();
-        gl.glColor3f(0, 1, 0);
-        gl.glLineWidth(100f);
-        gl.glBegin(GL2.GL_TRIANGLES);
-        gl.glVertex2f(1900,820);
-        gl.glVertex2f(1900,-1000);
-        gl.glVertex2f(-1900,-1000);
-        gl.glVertex2f(-1900,820);
-        gl.glEnd();
-        gl.glPopMatrix();
-    }
-    public void bola0(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(transXBola, transYBola, 0);
-        gl.glTranslatef(margemXdErro,margemYdErro,0);
-        // Aplica os valores convertidos:
-        gl.glColor3f(1,0,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
-    }
-    public void vida1(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(0, 0, 0);
-        gl.glTranslatef(-1250, 965, 0);//mantem a bola no ponto quando começar
-        gl.glColor3f(1,0,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
-    }
-    public void vida2(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(0, 0, 0);
-        gl.glTranslatef(-1050, 965, 0);//mantem a bola no ponto quando começar
-        gl.glColor3f(1,0,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
-    }
-    public void vida3(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(0, 0, 0);
-        gl.glTranslatef(-850, 965, 0);//mantem a bola no ponto quando começar
-        gl.glColor3f(1,0,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
-    }
-    public void vida4(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(0, 0, 0);
-        gl.glTranslatef(-650, 965, 0);//mantem a bola no ponto quando começar
-        gl.glColor3f(1,0,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
-    }
-    public void vida5(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(0, 0, 0);
-        gl.glTranslatef(-450, 965, 0);//mantem a bola no ponto quando começar
-        gl.glColor3f(1,0,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
-    }
-    public void barrinha(GL2 gl, GLUT glut){
-        gl.glPushMatrix();
-        gl.glColor3f(1,0,1);
-        gl.glTranslatef(movimentoBarrinha,0,1);
-        gl.glBegin(GL2.GL_POLYGON);
-        gl.glVertex2f(-250, -800);
-        gl.glVertex2f(250, -800);
-        gl.glVertex2f(250, -850);
-        gl.glVertex2f(-250, -850);
-        gl.glEnd();
-        gl.glPopMatrix();
     }
 
     public void desenhaTexto(GL2 gl, int xPosicao, int yPosicao, Color cor, String frase){
@@ -457,29 +637,6 @@ public class Cena implements GLEventListener{
         textRenderer1.draw(frase, xPosicao, yPosicao);
         textRenderer1.endRendering();
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, mode);
-    }
-
-    public void iluminacaoAmbiente(GL2 gl) {
-        float luzAmbiente[] = {2.0f, 2.0f, 2.0f, 1.0f};
-        float posicaoLuz[] = {-50.0f, 0.0f, 100.0f, 1.0f};
-
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, luzAmbiente, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, posicaoLuz, 0);
-    }
-
-    public void iluminacaoDifusa(GL2 gl) {
-        float luzDifusa[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float posicaoLuz[] = {-50.0f, -5.0f, 100.0f, 0.0f};
-
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, luzDifusa, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, posicaoLuz, 0);
-    }
-
-    public void ligarLuz(GL2 gl) {
-        gl.glEnable(GL2.GL_COLOR_MATERIAL);
-        gl.glEnable(GL2.GL_LIGHTING);
-        gl.glEnable(GL2.GL_LIGHT0);
-        gl.glShadeModel(GL2.GL_SMOOTH);
     }
 
     @Override
