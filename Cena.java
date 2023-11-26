@@ -302,6 +302,14 @@ public class Cena implements GLEventListener{
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
+    public void obstaculo(GL2 gl,GLUT glut){
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 0);
+        gl.glTranslatef(10, -70, 0);
+        gl.glColor3f(1,1,1);
+        glut.glutSolidSphere(tamanho,500,500);
+        gl.glPopMatrix();
+    }
     public void vestiario(GL2 gl, GLUT glut){
         gl.glPushMatrix();
         gl.glColor3f(0.5f,0.5f,0.5f);
@@ -600,7 +608,7 @@ public class Cena implements GLEventListener{
                 movimentacaoDaBarrinha();
 
                 if (fase >= 2) {
-                    //obstaculo(gl, glut);
+                    obstaculo(gl, glut);
                     //colisaoObstaculo();
                 }
             }
