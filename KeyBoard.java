@@ -21,14 +21,6 @@ public class KeyBoard implements KeyListener{
                 cena.pause =! cena.pause;
                 cena.Menu = false;
                 cena.dandoPlay =! cena.pause;
-
-                if (cena.fimDoJogo){
-                    cena.restartDoJogo();
-                } else{
-                    cena.dandoPlay=!cena.dandoPlay;
-                    cena.Menu=false;
-                    cena.pause=!cena.dandoPlay;
-                }
                 break;
             case 13://Tecla ENTER - Start Jogo
                 cena.dandoPlay = true;
