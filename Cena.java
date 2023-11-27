@@ -11,7 +11,7 @@ public class Cena implements GLEventListener{
     private float xMin, xMax, yMin, yMax, zMin, zMax;
     private TextRenderer textRenderer;
     private TextRenderer textRenderer1;
-    public int placar = 0; //25 pontos
+    public int placar = 0;
     public int vidas = 5;
     public int fase = 1;
     public float tamanho = 85;
@@ -197,8 +197,8 @@ public class Cena implements GLEventListener{
         gl.glBegin(GL.GL_LINE_LOOP);
         gl.glVertex2f(1200,500);
         gl.glVertex2f(1200,-750);
-        gl.glVertex2f(1800,-750);
-        gl.glVertex2f(1800,500);
+        gl.glVertex2f(1900,-750);
+        gl.glVertex2f(1900,500);
         gl.glEnd();
         gl.glPopMatrix();
     }
@@ -209,8 +209,8 @@ public class Cena implements GLEventListener{
         gl.glBegin(GL.GL_LINE_LOOP);
         gl.glVertex2f(-1200,500);
         gl.glVertex2f(-1200,-750);
-        gl.glVertex2f(-1800,-750);
-        gl.glVertex2f(-1800,500);
+        gl.glVertex2f(-1900,-750);
+        gl.glVertex2f(-1900,500);
         gl.glEnd();
         gl.glPopMatrix();
     }
@@ -247,7 +247,6 @@ public class Cena implements GLEventListener{
         gl.glPushMatrix();
         gl.glTranslatef(transXBola, transYBola, 0);
         gl.glTranslatef(margemXdErro,margemYdErro,0);
-        // Aplica os valores convertidos:
         gl.glColor3f(1,0,0);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
@@ -295,7 +294,7 @@ public class Cena implements GLEventListener{
     public void obstaculo(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(0, 0, 0);
-        gl.glTranslatef(10, -70, 0);
+        gl.glTranslatef(10, -115, 0);
         gl.glColor3f(1,1,1);
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
@@ -391,6 +390,18 @@ public class Cena implements GLEventListener{
         gl.glEnd();
         gl.glPopMatrix();
     }
+    public void camiseta1(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(0, 1, 0);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(300, -500);
+        gl.glVertex2f(700, -500);
+        gl.glVertex2f(700, -820);
+        gl.glVertex2f(300, -820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
     public void camisetaMangaDireita(GL2 gl,GLUT glut) {
         gl.glPushMatrix();
         gl.glTranslatef(0, 0, 80);
@@ -477,12 +488,12 @@ public class Cena implements GLEventListener{
     }
     public void movimentarBola0(){
         if (dandoPlay && vidas!=0){
-            transYBola+= taxaAttY;//inicia a movimentacao da bolinha no eixo y
-            superiorYBola =transYBola + tamanho + margemYdErro;//armazena a extremidade Y com base na translacao e tamanho do objeto( /2 porque a bolinha é iniciada no centro da janela )
+            transYBola+= taxaAttY;
+            superiorYBola =transYBola + tamanho + margemYdErro;
             inferiorYBola =transYBola - tamanho + margemYdErro;
 
-            transXBola+= taxaAttX;//inicia a movimentacao da bolinha no eixo X
-            direitaXBola =transXBola + tamanho + margemXdErro;//armazena a extremidade X
+            transXBola+= taxaAttX;
+            direitaXBola =transXBola + tamanho + margemXdErro;
             esquerdaXBola= transXBola - tamanho + margemXdErro;
 
             if(taxaAttX>= 0){
@@ -510,7 +521,7 @@ public class Cena implements GLEventListener{
                     superiorYBola += restoMargemDeErro;
                     inferiorYBola = superiorYBola - 100;
                 }
-            } else {
+            }else{
                 float pixeisAteBarra = (- 850) - inferiorYBola;
 
                 float restoMargemDeErro = pixeisAteBarra % taxaAttY;
@@ -520,62 +531,45 @@ public class Cena implements GLEventListener{
                     superiorYBola = inferiorYBola + 100;
                 }
             }
-            //verificar colisoes paredes
             if(direitaXBola >= janela ){
                 taxaAttX = - taxaAttX;
-            } else if(esquerdaXBola <= (-janela)){
+            }else if(esquerdaXBola <= (-janela)){
                 taxaAttX = - taxaAttX;
-            }
-            //verifica colisões teto/chão
-            if(superiorYBola >= 800f){
+            }if(superiorYBola >= 800f){
                 taxaAttY = - taxaAttY;
             }else if(inferiorYBola <= -1100f ){
                 vidas-=1;
-                //resetando valores iniciaais
                 restartPosicaoDaBolinha();
             }
         }
     }
-    public void movimentacaoDaBarrinha(){
-        //verifica colisao no eixo y
+    public void movimentacaoDaBarrinha(){//repetindo 2 vezes - placar duplicado
         if(direitaXBola >= esquerdaBarrinha && esquerdaXBola <= direitaBarrinha){
-            if (inferiorYBola == -850f)
-            {
+            if (inferiorYBola == -850f){
                 placar+=50;
                 fase = (placar/200)+1;
-
-                //taxa crescente, eixo y
                 taxaAttY = velocidadeY + (5 * (fase-1));
-
                 Random ran = new Random();
                 int aleatorizaAcressimoX = ran.nextInt(6);
-                // bolinha continua o curso do eixo x que estava realizando
                 if (taxaAttX<0){
-                    taxaAttX = -velocidadeX - (5 * (fase-1));//pode aumentar velocidade a depender da fase
-                    taxaAttX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
-                } else {
-                    taxaAttX = velocidadeX + (5 * (fase - 1));//pode aumentar velocidade a depender da fase
-                    taxaAttX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                    taxaAttX = -velocidadeX - (5 * (fase-1));
+                    taxaAttX -= aleatorizaAcressimoX;
+                }else{
+                    taxaAttX = velocidadeX + (5 * (fase - 1));
+                    taxaAttX += aleatorizaAcressimoX;
                 }
-            }else
-            if (inferiorYBola <= -850f && superiorYBola >= -900f)// parte superior + margem de erro
-            {
+            }else if (inferiorYBola <= -850f && superiorYBola >= -900f){
                 placar+=50;
-
                 fase = (placar/200)+1;
-
-                //taxa crescente, eixo y
                 taxaAttY = velocidadeY + (5 * (fase-1));
-
                 Random ran = new Random();
                 int aleatorizaAcressimoX = ran.nextInt(6);
-                //se bater na lateral a bolinha vai para o lado oposto em relação ao eixo x
                 if (taxaAttX < 0){
-                    taxaAttX = velocidadeX + (5 * (fase-1) );//pode aumentar velocidade a depender da fase
-                    taxaAttX += aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
-                } else {
-                    taxaAttX = -velocidadeX - (5 * (fase - 1));//pode aumentar velocidade a depender da fase
-                    taxaAttX -= aleatorizaAcressimoX;// acressimo aleatorio para evitar repetição de colisão
+                    taxaAttX = velocidadeX + (5 * (fase-1) );
+                    taxaAttX += aleatorizaAcressimoX;
+                }else{
+                    taxaAttX = -velocidadeX - (5 * (fase - 1));
+                    taxaAttX -= aleatorizaAcressimoX;
                 }
             }
         }
@@ -583,10 +577,8 @@ public class Cena implements GLEventListener{
 
     @Override
     public void display(GLAutoDrawable drawable){
-        //obtem o contexto Opengl
         GL2 gl = drawable.getGL().getGL2();
         GLUT glut = new GLUT();
-        //cor da janela - Branco
         gl.glClearColor(1, 1, 1, 1);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
@@ -650,16 +642,19 @@ public class Cena implements GLEventListener{
             camiseta(gl,glut);
             camisetaMangaEsquerda(gl,glut);
             camisetaMangaDireita(gl,glut);
+            //camiseta1(gl,glut);
             desenhaTexto(gl, 820, 900, Color.BLACK, "O jogo está Pausado!");
             desenhaTexto(gl, 710, 830, Color.BLACK, "Aperte a letra P para continuar o jogo!");
-            desenhaTexto(gl, 1166, 350, Color.BLACK, "FELIPE");
+            desenhaTexto(gl, 1616, 350, Color.BLACK, "FELIPE");
+            desenhaTexto(gl, 1156, 350, Color.BLACK, "JOÃO V.");
+            desenhaTexto(gl, 706, 350, Color.BLACK, "JOÃO O.");
+            desenhaTexto(gl, 246, 350, Color.BLACK, "LUIGI");
         }
         gl.glFlush();
     }
 
     public void desenhaTexto(GL2 gl, int xPosicao, int yPosicao, Color cor, String frase){
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-        //Retorna a largura e altura da janela
         textRenderer.beginRendering(Renderer.screenWidth, Renderer.screenHeight);
         textRenderer.setColor(cor);
         textRenderer.draw(frase, xPosicao, yPosicao);
@@ -669,7 +664,6 @@ public class Cena implements GLEventListener{
 
     public void desenhaTexto1(GL2 gl, int xPosicao, int yPosicao, Color cor, String frase){
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-        //Retorna a largura e altura da janela
         textRenderer1.beginRendering(Renderer.screenWidth, Renderer.screenHeight);
         textRenderer1.setColor(cor);
         textRenderer1.draw(frase, xPosicao, yPosicao);
@@ -679,19 +673,15 @@ public class Cena implements GLEventListener{
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height){
-        //obtem o contexto grafico Opengl
         GL2 gl = drawable.getGL().getGL2();
 
-        //ativa a matriz de projecao
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity(); //ler a matriz identidade
 
-        //projecao ortogonal sem a correcao do aspecto
         gl.glOrtho(xMin, xMax, yMin, yMax, zMin, zMax);
 
-        //ativa a matriz de modelagem
         gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity(); //ler a matriz identidade
+        gl.glLoadIdentity();
         System.out.println("Reshape: " + width + ", " + height);
     }
     @Override
