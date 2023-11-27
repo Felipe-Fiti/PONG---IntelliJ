@@ -402,6 +402,30 @@ public class Cena implements GLEventListener{
         gl.glEnd();
         gl.glPopMatrix();
     }
+    public void camiseta2(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(1, 0, 1);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(300, -500);
+        gl.glVertex2f(700, -500);
+        gl.glVertex2f(700, -820);
+        gl.glVertex2f(300, -820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void camiseta3(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(0, 0, 1);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(300, -500);
+        gl.glVertex2f(700, -500);
+        gl.glVertex2f(700, -820);
+        gl.glVertex2f(300, -820);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
     public void camisetaMangaDireita(GL2 gl,GLUT glut) {
         gl.glPushMatrix();
         gl.glTranslatef(0, 0, 80);
