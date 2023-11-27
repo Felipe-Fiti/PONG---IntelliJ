@@ -438,10 +438,82 @@ public class Cena implements GLEventListener{
         gl.glEnd();
         gl.glPopMatrix();
     }
+    public void camisetaMangaDireita1(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(0, 1, 0);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(850, -300);
+        gl.glVertex2f(750, -300);
+        gl.glVertex2f(650, -100);
+        gl.glVertex2f(750, -100);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void camisetaMangaDireita2(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(1, 0, 1);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(850, -300);
+        gl.glVertex2f(750, -300);
+        gl.glVertex2f(650, -100);
+        gl.glVertex2f(750, -100);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void camisetaMangaDireita3(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(0, 0, 1);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(850, -300);
+        gl.glVertex2f(750, -300);
+        gl.glVertex2f(650, -100);
+        gl.glVertex2f(750, -100);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
     public void camisetaMangaEsquerda(GL2 gl,GLUT glut) {
         gl.glPushMatrix();
         gl.glTranslatef(0, 0, 80);
         gl.glColor3f(1, 1, 0);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(150, -300);
+        gl.glVertex2f(250, -300);
+        gl.glVertex2f(350, -100);
+        gl.glVertex2f(250, -100);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void camisetaMangaEsquerda1(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(0, 1, 0);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(150, -300);
+        gl.glVertex2f(250, -300);
+        gl.glVertex2f(350, -100);
+        gl.glVertex2f(250, -100);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void camisetaMangaEsquerda2(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(1, 0, 1);
+        gl.glBegin(gl.GL_POLYGON);
+        gl.glVertex2f(150, -300);
+        gl.glVertex2f(250, -300);
+        gl.glVertex2f(350, -100);
+        gl.glVertex2f(250, -100);
+        gl.glEnd();
+        gl.glPopMatrix();
+    }
+    public void camisetaMangaEsquerda3(GL2 gl,GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslatef(0, 0, 80);
+        gl.glColor3f(0, 0, 1);
         gl.glBegin(gl.GL_POLYGON);
         gl.glVertex2f(150, -300);
         gl.glVertex2f(250, -300);
@@ -667,8 +739,14 @@ public class Cena implements GLEventListener{
             camisetaMangaEsquerda(gl,glut);
             camisetaMangaDireita(gl,glut);
             camiseta1(gl,glut);
+            camisetaMangaEsquerda1(gl,glut);
+            camisetaMangaDireita1(gl,glut);
             camiseta2(gl,glut);
+            camisetaMangaEsquerda2(gl,glut);
+            camisetaMangaDireita2(gl,glut);
             camiseta3(gl,glut);
+            camisetaMangaEsquerda3(gl,glut);
+            camisetaMangaDireita3(gl,glut);
             desenhaTexto(gl, 820, 900, Color.BLACK, "O jogo está Pausado!");
             desenhaTexto(gl, 710, 830, Color.BLACK, "Aperte a letra P para continuar o jogo!");
             desenhaTexto(gl, 1616, 350, Color.BLACK, "FELIPE");
