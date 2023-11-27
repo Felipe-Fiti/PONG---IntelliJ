@@ -642,7 +642,7 @@ public class Cena implements GLEventListener{
             camiseta(gl,glut);
             camisetaMangaEsquerda(gl,glut);
             camisetaMangaDireita(gl,glut);
-            //camiseta1(gl,glut);
+            camiseta1(gl,glut);
             desenhaTexto(gl, 820, 900, Color.BLACK, "O jogo está Pausado!");
             desenhaTexto(gl, 710, 830, Color.BLACK, "Aperte a letra P para continuar o jogo!");
             desenhaTexto(gl, 1616, 350, Color.BLACK, "FELIPE");
