@@ -76,10 +76,10 @@ public class Cena implements GLEventListener{
         gl.glColor3f(0,0,0);
         gl.glLineWidth(100f);
         gl.glBegin(GL.GL_LINE_LOOP);
-        gl.glVertex2f(1880,820);
-        gl.glVertex2f(1880,-1020);
-        gl.glVertex2f(-1880,-1020);
-        gl.glVertex2f(-1880,820);
+        gl.glVertex2f(1901,820);
+        gl.glVertex2f(1901,-1001);
+        gl.glVertex2f(-1901,-1001);
+        gl.glVertex2f(-1901,820);
         gl.glEnd();
         gl.glPopMatrix();
     }
@@ -218,26 +218,16 @@ public class Cena implements GLEventListener{
         gl.glPushMatrix();
         gl.glColor3f(0,1,0);
         gl.glLineWidth(100f);
-        gl.glBegin(GL2.GL_QUAD_STRIP);
+        gl.glBegin(GL2.GL_POLYGON);
         gl.glVertex2f(1900,820);
         gl.glVertex2f(1900,-1000);
         gl.glVertex2f(-1900,-1000);
         gl.glVertex2f(-1900,820);
-        gl.glEnd();
-        gl.glPopMatrix();
-    }
-    public void tri(GL2 gl, GLUT glut){
-        gl.glPushMatrix();
-        gl.glColor3f(0, 1, 0);
-        gl.glLineWidth(100f);
-        gl.glBegin(GL2.GL_TRIANGLES);
         gl.glVertex2f(1900,820);
-        gl.glVertex2f(1900,-1000);
-        gl.glVertex2f(-1900,-1000);
-        gl.glVertex2f(-1900,820);
         gl.glEnd();
         gl.glPopMatrix();
     }
+
     public void barrinha(GL2 gl, GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(0,-900,0);
@@ -630,7 +620,7 @@ public class Cena implements GLEventListener{
             faixaDireita(gl,glut);
             faixaEsquerda(gl,glut);
             campo(gl,glut);
-            tri(gl,glut);
+
             barrinha(gl, glut);
             movimentacaoDaBarrinha();
             desenhaTexto1(gl, 30, 1000, Color.BLACK, "LEVEL " + fase);
