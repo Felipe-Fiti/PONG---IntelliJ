@@ -205,7 +205,7 @@ public class Cena implements GLEventListener{
         gl.glColor3f(1,1,1);
         gl.glLineWidth(100f);
         gl.glBegin(GL.GL_LINE_LOOP);
-        gl.glVertex2f(10,900);
+        gl.glVertex2f(10,810);
         gl.glVertex2f(10,-1000);
         gl.glEnd();
         gl.glPopMatrix();
