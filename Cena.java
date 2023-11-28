@@ -227,20 +227,16 @@ public class Cena implements GLEventListener{
         gl.glEnd();
         gl.glPopMatrix();
     }
-
     public void barrinha(GL2 gl, GLUT glut){
         gl.glPushMatrix();
-        gl.glTranslatef(0,-900,0);
-        gl.glTranslatef(movimentoBarrinha,0,0);
-        float x = (float) -(tamanhoB*2);
-        for (int i = 0; i < 6 ; i++) {
-            gl.glPushMatrix();
-            gl.glTranslatef(x,0,0);
-            gl.glColor3f(0,1,1);
-            glut.glutSolidCube(tamanhoB);
-            gl.glPopMatrix();
-            x+=tamanhoB;
-        }
+        gl.glColor3f(0,1,1);
+        gl.glTranslatef(movimentoBarrinha,0,1);
+        gl.glBegin(GL2.GL_POLYGON);
+        gl.glVertex2f(-250, -850);
+        gl.glVertex2f(250, -850);
+        gl.glVertex2f(250, -900);
+        gl.glVertex2f(-250, -900);
+        gl.glEnd();
         gl.glPopMatrix();
     }
     public void bola0(GL2 gl,GLUT glut){
@@ -251,52 +247,57 @@ public class Cena implements GLEventListener{
         glut.glutSolidSphere(tamanho,500,500);
         gl.glPopMatrix();
     }
-    public void vida1(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(0, 0, 0);
-        gl.glTranslatef(-1250, 965, 0);
+    public void vidasDoJogo(GL2 gl, GLUT glut){
+        gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glColor3f(1,0,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
-    }
-    public void vida2(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(0, 0, 0);
-        gl.glTranslatef(-1050, 965, 0);
-        gl.glColor3f(1,0,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
-    }
-    public void vida3(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(0, 0, 0);
-        gl.glTranslatef(-850, 965, 0);
-        gl.glColor3f(1,0,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
-    }
-    public void vida4(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(0, 0, 0);
-        gl.glTranslatef(-650, 965, 0);
-        gl.glColor3f(1,0,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
-    }
-    public void vida5(GL2 gl,GLUT glut){
-        gl.glPushMatrix();
-        gl.glTranslatef(0, 0, 0);
-        gl.glTranslatef(-450, 965, 0);
-        gl.glColor3f(1,0,0);
-        glut.glutSolidSphere(tamanho,500,500);
-        gl.glPopMatrix();
+        if (vidas>=1) {
+            gl.glPushMatrix();
+            gl.glTranslatef(0, 0, 0);
+            gl.glTranslatef(-1250, 965, 0);
+            gl.glColor3f(1,0,0);
+            glut.glutSolidSphere(tamanho,500,500);
+            gl.glPopMatrix();
+        }
+        if (vidas>=2) {
+            gl.glPushMatrix();
+            gl.glTranslatef(0, 0, 0);
+            gl.glTranslatef(-1050, 965, 0);
+            gl.glColor3f(1,0,0);
+            glut.glutSolidSphere(tamanho,500,500);
+            gl.glPopMatrix();
+        }
+        if (vidas>=3) {
+            gl.glPushMatrix();
+            gl.glTranslatef(0, 0, 0);
+            gl.glTranslatef(-850, 965, 0);
+            gl.glColor3f(1,0,0);
+            glut.glutSolidSphere(tamanho,500,500);
+            gl.glPopMatrix();
+        }
+        if (vidas>=4) {
+            gl.glPushMatrix();
+            gl.glTranslatef(0, 0, 0);
+            gl.glTranslatef(-650, 965, 0);
+            gl.glColor3f(1,0,0);
+            glut.glutSolidSphere(tamanho,500,500);
+            gl.glPopMatrix();
+        }
+        if(vidas==5) {
+            gl.glPushMatrix();
+            gl.glTranslatef(0, 0, 0);
+            gl.glTranslatef(-450, 965, 0);
+            gl.glColor3f(1,0,0);
+            glut.glutSolidSphere(tamanho,500,500);
+            gl.glPopMatrix();
+        }
     }
     public void obstaculo(GL2 gl,GLUT glut){
         gl.glPushMatrix();
         gl.glTranslatef(0, 0, 0);
         gl.glTranslatef(10, -115, 0);
         gl.glColor3f(1,1,1);
-        glut.glutSolidSphere(tamanho,500,500);
+        tamanhoNormalDoObstaculo = tamanhoPrimarioDoObstaculo + (20 * (fase-1));
+        glut.glutSolidSphere(tamanhoNormalDoObstaculo/2,(int)tamanhoNormalDoObstaculo,(int)tamanhoNormalDoObstaculo);
         gl.glPopMatrix();
     }
     public void vestiario(GL2 gl, GLUT glut){
@@ -523,20 +524,13 @@ public class Cena implements GLEventListener{
         gl.glPopMatrix();
     }
     public void iluminacaoAmbiente(GL2 gl){
-        float luzAmbiente[] = {2.0f, 2.0f, 2.0f, 1.0f};
+        float luzAmbiente[] = {0.6f, 0.6f, 0.6f, 1.0f};
         float posicaoLuz[] = {-50.0f, 0.0f, 100.0f, 1.0f};
 
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, luzAmbiente, 0);
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, posicaoLuz, 0);
     }
-    public void iluminacaoDifusa(GL2 gl){
-        float luzDifusa[] = {1.0f, 1.0f, 1.0f, 1.0f};
-        float posicaoLuz[] = {-50.0f, -5.0f, 100.0f, 0.0f};
-
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_DIFFUSE, luzDifusa, 0);
-        gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_POSITION, posicaoLuz, 0);
-    }
-    public void ligarLuz(GL2 gl){
+    public void ligarLuz(GL2 gl) {
         gl.glEnable(GL2.GL_COLOR_MATERIAL);
         gl.glEnable(GL2.GL_LIGHTING);
         gl.glEnable(GL2.GL_LIGHT0);
@@ -582,6 +576,35 @@ public class Cena implements GLEventListener{
         placar = 0;
         fase= 1;
     }
+    public void colisaoDoObstaculo(){
+
+        if(direitaXBola >= -tamanhoNormalDoObstaculo/2 && esquerdaXBola  <= tamanhoNormalDoObstaculo/2){
+            if (inferiorYBola  <= tamanhoNormalDoObstaculo/2 && inferiorYBola  >= tamanhoNormalDoObstaculo/2 - 10 )// parte superior
+            {
+                //taxa crescente, eixo y
+                taxaAttY = velocidadeY + (5 * (fase-1));
+
+                if (taxaAttX<0){
+                    taxaAttX = -velocidadeX - (5 * (fase-1));
+                } else {
+                    taxaAttX = velocidadeX + (5 * (fase - 1));
+                }
+            } else if (superiorYBola >= - tamanhoNormalDoObstaculo/2 && superiorYBola <= - tamanhoNormalDoObstaculo/2 + 10)// parte inferior
+            {
+                //taxa decrescente, eixo y
+                taxaAttY = -velocidadeY - (5 * (fase-1));
+
+                if (taxaAttX<0){
+                    taxaAttX = -velocidadeX - (5 * (fase-1));
+                } else {
+                    taxaAttX = velocidadeX + (5 * (fase - 1));
+                }
+            } else if (inferiorYBola <= tamanhoNormalDoObstaculo/2 && superiorYBola >= -tamanhoNormalDoObstaculo/2)
+            {
+                taxaAttX = - taxaAttX;
+            }
+        }
+    }
     public void movimentarBola0(){
         if (dandoPlay && vidas!=0){
             transYBola+= taxaAttY;
@@ -618,7 +641,7 @@ public class Cena implements GLEventListener{
                     inferiorYBola = superiorYBola - 100;
                 }
             }else{
-                float pixeisAteBarra = (- 850) - inferiorYBola;
+                float pixeisAteBarra = (- 900) - inferiorYBola;
 
                 float restoMargemDeErro = pixeisAteBarra % taxaAttY;
                 if(restoMargemDeErro != 0){
@@ -641,7 +664,7 @@ public class Cena implements GLEventListener{
     }
     public void movimentacaoDaBarrinha(){//repetindo 2 vezes - placar duplicado
         if(direitaXBola >= esquerdaBarrinha && esquerdaXBola <= direitaBarrinha){
-            if (inferiorYBola == -850f){
+            if (inferiorYBola == -900f){
                 placar+=50;
                 fase = (placar/200)+1;
                 taxaAttY = velocidadeY + (5 * (fase-1));
@@ -654,7 +677,7 @@ public class Cena implements GLEventListener{
                     taxaAttX = velocidadeX + (5 * (fase - 1));
                     taxaAttX += aleatorizaAcressimoX;
                 }
-            }else if (inferiorYBola <= -850f && superiorYBola >= -900f){
+            }else if (inferiorYBola <= -900f && superiorYBola >= -950f){
                 placar+=50;
                 fase = (placar/200)+1;
                 taxaAttY = velocidadeY + (5 * (fase-1));
@@ -678,6 +701,12 @@ public class Cena implements GLEventListener{
         gl.glClearColor(1, 1, 1, 1);
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
+
+        gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, mode);
+
+        iluminacaoAmbiente(gl);
+        ligarLuz(gl);
+
         if(Menu){
             bordaInicio(gl,glut);
             sol(gl,glut);
@@ -698,11 +727,7 @@ public class Cena implements GLEventListener{
 
         }else if(dandoPlay && vidas != 0){
             bola0(gl,glut);
-            vida1(gl,glut);
-            vida2(gl,glut);
-            vida3(gl,glut);
-            vida4(gl,glut);
-            vida5(gl,glut);
+            vidasDoJogo(gl,glut);
             borda(gl,glut);
             faixaCentro(gl, glut);
             faixaDireita(gl,glut);
@@ -753,6 +778,10 @@ public class Cena implements GLEventListener{
             desenhaTexto(gl, 1156, 350, Color.BLACK, "JOÃO V.");
             desenhaTexto(gl, 706, 350, Color.BLACK, "JOÃO O.");
             desenhaTexto(gl, 246, 350, Color.BLACK, "LUIGI");
+        } else if (vidas == 0){
+            fimDoJogo = true;
+            desenhaTexto(gl, 425, 500, Color.red ,"Game Over");
+            desenhaTexto(gl, 275, 250, Color.white ,"Aperte  espaço  para  reiniciar !!");
         }
         gl.glFlush();
     }
