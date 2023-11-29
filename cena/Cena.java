@@ -34,7 +34,7 @@ public class Cena implements GLEventListener{
     public float superiorYBola = tamanho, inferiorYBola = -tamanho;
     public final float velocidadeX = 60f, velocidadeY = 45f;
     public float taxaAttX = 60f , taxaAttY = 45f;
-    public float direitaBarrinha = tamanho*3 , esquerdaBarrinha =direitaBarrinha -(tamanho*6);
+    public float direitaBarrinha = 250 , esquerdaBarrinha =direitaBarrinha - 500;
     public float Ybarrinha = -900 ;
     public boolean dandoPlay = false;
     public boolean Menu = true;
@@ -590,8 +590,8 @@ public class Cena implements GLEventListener{
         taxaAttX = velocidadeX;
 
         movimentoBarrinha=0;
-        direitaBarrinha = tamanho*3;
-        esquerdaBarrinha =direitaBarrinha -(tamanho*6);
+        direitaBarrinha = 250;
+        esquerdaBarrinha =direitaBarrinha - 500;
 
         fimDoJogo=false;
         vidas = 5;
@@ -612,7 +612,7 @@ public class Cena implements GLEventListener{
                 if(restoMargemDeErro != 0){
                     margemXdErro += 1;
                     direitaXBola += 1;
-                    esquerdaXBola = direitaXBola - 100;
+                    esquerdaXBola = direitaXBola - 170;
                 }
             }else{
                 float pixeisAteObstaculo = (tamanhoNormalDoObstaculo/2) - esquerdaXBola;
@@ -620,7 +620,7 @@ public class Cena implements GLEventListener{
                 if(restoMargemDeErro != 0){
                     margemXdErro -= 1;
                     direitaXBola -= 1;
-                    esquerdaXBola = direitaXBola - 100;
+                    esquerdaXBola = direitaXBola - 170;
                 }
             }
             if(taxaAttY>=0){
@@ -629,15 +629,15 @@ public class Cena implements GLEventListener{
                 if(restoMargemDeErro != 0){
                     margemYdErro += 1;
                     superiorYBola += 1;
-                    inferiorYBola = superiorYBola - 100;
+                    inferiorYBola = superiorYBola - 170;
                 }
-            } else {
+            }else{
                 float pixeisAteBarra = (tamanhoNormalDoObstaculo/2) - inferiorYBola;
                 float restoMargemDeErro = pixeisAteBarra % taxaAttY;
                 if(restoMargemDeErro != 0){
                     margemYdErro -= 1;
                     inferiorYBola -= 1;
-                    superiorYBola = inferiorYBola + 100;
+                    superiorYBola = inferiorYBola + 170;
                 }
             }
         }
@@ -690,7 +690,7 @@ public class Cena implements GLEventListener{
                 if(restoMargemDeErro != 0){
                     margemXdErro += 1;
                     direitaXBola += 1;
-                    esquerdaXBola = direitaXBola - 100;
+                    esquerdaXBola = direitaXBola - 170;
                 }
             }else{
                 float pixeisAteParede = - janela + esquerdaXBola;
@@ -698,7 +698,7 @@ public class Cena implements GLEventListener{
                 if(restoMargemDeErro != 0){
                     margemXdErro -= 1;
                     direitaXBola -= 1;
-                    esquerdaXBola = direitaXBola - 100;
+                    esquerdaXBola = direitaXBola - 170;
                 }
             }
             if(taxaAttY>=0){
@@ -707,7 +707,7 @@ public class Cena implements GLEventListener{
                 if(restoMargemDeErro != 0){
                     margemYdErro += 1;
                     superiorYBola += 1;
-                    inferiorYBola = superiorYBola - 100;
+                    inferiorYBola = superiorYBola - 170;
                 }
             }else{
                 float pixeisAteBarra = (- 800) - inferiorYBola;
@@ -716,7 +716,7 @@ public class Cena implements GLEventListener{
                 if(restoMargemDeErro != 0){
                     margemYdErro += 1;
                     inferiorYBola += 1;
-                    superiorYBola = inferiorYBola + 100;
+                    superiorYBola = inferiorYBola + 170;
                 }
             }
             if(direitaXBola >= janela ){
@@ -731,9 +731,9 @@ public class Cena implements GLEventListener{
             }
         }
     }
-    public void movimentacaoDaBarrinha(){//repetindo 2 vezes - placar duplicado
+    public void movimentacaoDaBarrinha(){
         if(direitaXBola >= esquerdaBarrinha && esquerdaXBola <= direitaBarrinha){
-            if (inferiorYBola == -850f){
+            if (inferiorYBola <= -850f && inferiorYBola >= 800f){
 
                 placar+=50;
                 fase = (placar/200)+1;
@@ -810,11 +810,13 @@ public class Cena implements GLEventListener{
             faixaDireita(gl,glut);
             faixaEsquerda(gl,glut);
             campo(gl,glut);
-
             barrinha(gl, glut);
             movimentacaoDaBarrinha();
             desenhaTexto1(gl, 30, 1000, Color.BLACK, "LEVEL " + fase);
             desenhaTexto1(gl, 1600, 1000, Color.BLACK, "SCORE " + placar);
+            System.out.println("esquerda " +esquerdaXBola + "direita"+direitaXBola + "inferior"+inferiorYBola + "superior"+superiorYBola);
+            System.out.println("esquerda barra" +esquerdaBarrinha + "direita barra"+direitaBarrinha);
+
 
             if (vidas!= 0) {
                 bola0(gl, glut);
