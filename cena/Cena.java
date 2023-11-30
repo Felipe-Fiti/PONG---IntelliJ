@@ -814,9 +814,6 @@ public class Cena implements GLEventListener{
             movimentacaoDaBarrinha();
             desenhaTexto1(gl, 30, 1000, Color.BLACK, "LEVEL " + fase);
             desenhaTexto1(gl, 1600, 1000, Color.BLACK, "SCORE " + placar);
-            System.out.println("esquerda " +esquerdaXBola + "direita"+direitaXBola + "inferior"+inferiorYBola + "superior"+superiorYBola);
-            System.out.println("esquerda barra" +esquerdaBarrinha + "direita barra"+direitaBarrinha);
-
 
             if (vidas!= 0) {
                 bola0(gl, glut);
@@ -847,9 +844,9 @@ public class Cena implements GLEventListener{
             desenhaTexto(gl, 710, 830, Color.BLACK, "Aperte a letra P para continuar o jogo!");
         } else if (vidas == 0){
             fimDoJogo = true;
-            desenhaTexto(gl, 590, 450, Color.red,"GAME OVER");
-            desenhaTexto(gl, 430, 400, Color.red ,"Aperte a tecla Espaço para reiniciar !!");
-            desenhaTexto(gl, 510, 330, Color.red ,"A sua pontuação foi: "+placar);
+            desenhaTexto(gl, 890, 650, Color.red,"GAME OVER");
+            desenhaTexto(gl, 730, 600, Color.red ,"Aperte a tecla Espaço para reiniciar !!");
+            desenhaTexto(gl, 810, 550, Color.red ,"A sua pontuação foi: "+placar);
         }
         gl.glFlush();
     }
