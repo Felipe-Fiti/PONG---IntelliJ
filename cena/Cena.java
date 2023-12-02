@@ -1,4 +1,4 @@
-package cena;
+package Cena;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
@@ -9,7 +9,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.Random;
 import java.awt.Color;
 import java.awt.Font;
-import textura.Textura;
+import Textura.Textura;
 
 public class Cena implements GLEventListener{
     private float xMin, xMax, yMin, yMax, zMin, zMax;
@@ -631,7 +631,7 @@ public class Cena implements GLEventListener{
                     superiorYBola += 1;
                     inferiorYBola = superiorYBola - 170;
                 }
-            }else{
+            } else {
                 float pixeisAteBarra = (tamanhoNormalDoObstaculo/2) - inferiorYBola;
                 float restoMargemDeErro = pixeisAteBarra % taxaAttY;
                 if(restoMargemDeErro != 0){
@@ -731,9 +731,9 @@ public class Cena implements GLEventListener{
             }
         }
     }
-    public void movimentacaoDaBarrinha(){
+    public void movimentacaoDaBarrinha(){//repetindo 2 vezes - placar duplicado
         if(direitaXBola >= esquerdaBarrinha && esquerdaXBola <= direitaBarrinha){
-            if (inferiorYBola <= -850f && inferiorYBola >= 800f){
+            if (inferiorYBola == -850f){
 
                 placar+=50;
                 fase = (placar/200)+1;
@@ -810,6 +810,7 @@ public class Cena implements GLEventListener{
             faixaDireita(gl,glut);
             faixaEsquerda(gl,glut);
             campo(gl,glut);
+
             barrinha(gl, glut);
             movimentacaoDaBarrinha();
             desenhaTexto1(gl, 30, 1000, Color.BLACK, "LEVEL " + fase);
@@ -844,9 +845,9 @@ public class Cena implements GLEventListener{
             desenhaTexto(gl, 710, 830, Color.BLACK, "Aperte a letra P para continuar o jogo!");
         } else if (vidas == 0){
             fimDoJogo = true;
-            desenhaTexto(gl, 890, 650, Color.red,"GAME OVER");
-            desenhaTexto(gl, 730, 600, Color.red ,"Aperte a tecla Espaço para reiniciar !!");
-            desenhaTexto(gl, 810, 550, Color.red ,"A sua pontuação foi: "+placar);
+            desenhaTexto(gl, 590, 450, Color.red,"GAME OVER");
+            desenhaTexto(gl, 430, 400, Color.red ,"Aperte a tecla Espaço para reiniciar !!");
+            desenhaTexto(gl, 510, 330, Color.red ,"A sua pontuação foi: "+placar);
         }
         gl.glFlush();
     }
