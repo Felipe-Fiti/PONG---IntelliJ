@@ -1,4 +1,4 @@
-package cena;
+package Cena;
 
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
@@ -35,14 +35,14 @@ public class KeyBoard implements KeyListener{
                 if (cena.movimentoBarrinha > - cena.janela + 300) {
                     cena.movimentoBarrinha -= cena.velDoMovimentarDaBarra;
                     cena.direitaBarrinha -= cena.velDoMovimentarDaBarra;
-                    cena.esquerdaBarrinha = cena.direitaBarrinha - 170;
+                    cena.esquerdaBarrinha = cena.velDoMovimentarDaBarra - 300;
                 }
                 break;
             case 151://seta direita
                 if (cena.movimentoBarrinha < cena.janela - 300) {
                     cena.movimentoBarrinha += cena.velDoMovimentarDaBarra;
                     cena.direitaBarrinha += cena.velDoMovimentarDaBarra;
-                    cena.esquerdaBarrinha = cena.direitaBarrinha - 170;
+                    cena.esquerdaBarrinha = cena.velDoMovimentarDaBarra - 300;
                 }
                 break;
             case 32://Barra de Espaço
